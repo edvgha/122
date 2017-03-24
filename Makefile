@@ -1,7 +1,7 @@
 cc=gcc
 csrc = $(wildcard p3/*.c)
 as  = $(wildcard *.s)
-cflags = -O1 -S -m32
+cflags = -O1 -S -m64
 
 ifeq ($(shell uname -s), Darwin)
 	cc=/usr/local/bin/gcc-6
