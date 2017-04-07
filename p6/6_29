@@ -1,0 +1,66 @@
+
+* byte addressable
+* mem access are to 1 byte words
+* m = 13
+* E = 2, B = 4, S = 8
+         b = 2, s = 3
+
+Setindex Tag Valid Byte0 Byte1 Byte2 Byte3 Tag Valid Byte0 Byte1 Byte2 Byte3
+
+   0     09    1    86    30    3F    10   00    0    --    --    --    --
+   1     45    1    60    4F    E0    23   28    1    00    BC    0B    37
+   2     EB    0    --    --    --    --   0B    0    --    --    --    --
+   3     06    0    --    --    --    --   32    1    12    08    7B    AD
+   4     C7    1    06    78    07    C5   05    1    40    67    C2    3B
+   5     71    1    0B    DE    18    4B   6E    0    --    --    --    --
+   6     91    1    A0    B7    26    2D   F0    0    --    --    --    --
+   7     46    0    --    --    --    --   DE    1    12    C0    88    37
+
+    +-------+-------+-------+
+    |   8   |   3   |   2   |
+    +-------+-------+-------+
+    12                      0
+
+    A. 
+
+    11101011010xx
+        0x1B68
+        0x1B69
+        0x1B6A
+        0x1B6B
+
+    00001011010xx
+        0x168
+        0x169
+        0x16A
+        0x16B
+
+    B. 
+
+    11000111100xx
+        0x18F0
+        0x18F1
+        0x18F2
+        0x18F3
+
+    101100xx
+        0xB0
+        0xB1
+        0xB2
+        0xB3
+
+    C. 
+    
+    1110001101xx
+        0xE34
+        0xE35
+        0xE36
+        0xE37
+
+    D. 
+
+    11011110111xx
+        0x1BDC
+        0x1BDD
+        0x1BDE
+        0x1BDF
