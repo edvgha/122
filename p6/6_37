@@ -1,0 +1,26 @@
+A.
+
+B = 16 b = 4
+S = 32 s = 5
+C = 512
+
+100%
+
+B.
+
+B = 16 b = 4
+S = 64 s = 6
+C = 1024
+
+25%
+
+C.
+
+LRU replacement policy
+two-way
+B = 16 b = 4
+S = 16 s = 4
+C = 512
+
+25%
+
