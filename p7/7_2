@@ -1,0 +1,8 @@
+a) ref(main.1) -> def(main.1)
+b) ref(main.2) -> def(main.1)
+
+a) ERROR
+b) ERROR
+
+a) ref(x.1) -> def(x.2)
+b) ref(x.2) -> def(x.2)

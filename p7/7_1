@@ -1,0 +1,27 @@
+Num:    Value  Size Type    Bind   Vis      Ndx Name
+0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+1: 00000000     0 FILE    LOCAL  DEFAULT  ABS main.c
+16: 00000000    33 FUNC    GLOBAL DEFAULT    5 main
+17: 00000000     0 NOTYPE  GLOBAL DEFAULT  UND swap
+18: 00000000     8 OBJECT  GLOBAL DEFAULT    2 buf
+
+Num:    Value  Size Type    Bind   Vis      Ndx Name
+0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+1: 00000000     0 FILE    LOCAL  DEFAULT  ABS swap.c
+14: 00000000    32 FUNC    GLOBAL DEFAULT    1 swap
+15: 00000000     4 OBJECT  GLOBAL DEFAULT    3 bufp0
+16: 00000000     0 NOTYPE  GLOBAL DEFAULT  UND buf
+17: 00000004     4 OBJECT  GLOBAL DEFAULT  COM bufp1
+
+        symbol|swap.o sym ?|sym type|def module|section|
+        +-----+------------+--------+----------+-------+
+buf     |buf  |    yes     |   O    | main     | .data |
+        +-----+------------+--------+----------+-------+
+bufp0   |bufp0|    yes     |   O    |  swap    | .data |
+        +-----+------------+--------+----------+-------+
+bufp1   |bufp1|    yes     |   O    |  swap    | .bss  |
+        +-----+------------+--------+----------+-------+
+swap    |swap |    yes     |   F    |  swap    | .text |
+        +-----+------------+--------+----------+-------+
+temp    |temp |            |        |          |       |
+        +-----+------------+--------+----------+-------+
