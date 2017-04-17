@@ -1,0 +1,6 @@
+strong - functions and initialized global variables get strong symbols
+weak   - unintialized global variables 
+
+R1 : Multiple strong symbols are not allowed
+R2 : Given a strong symbol and and multiple weak symbolds, choose the strong symbols
+R3 : Given multiple weak symbols, choose any of the weak symbols

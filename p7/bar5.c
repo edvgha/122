@@ -1,6 +1,6 @@
-double x;
+int x;
 
 void f()
 {
-    x = -0.0;
+    x = 15213;
 }

@@ -1,0 +1,11 @@
+1.
+ref(main.1) -> def(main.1)
+ref(main.2) -> def(?)
+
+2. 
+ref(x.1) -> def(unknown)
+ref(x.2) -> def(unknown)
+
+3.
+ref(x.1) -> def(error)
+ref(x.2) -> def(error)
