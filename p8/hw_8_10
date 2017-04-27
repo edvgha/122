@@ -1,0 +1,3 @@
+A. Called once, returns twice - setjmp, fork
+B. Called once, never returns - longjmp
+C. Called once, returns one or more times - execve

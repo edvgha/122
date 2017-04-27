@@ -1,0 +1,8 @@
+Process pair    Concurrent ?
+---------------------------
+AB              no
+AC              yes
+AD              yes
+BC              yes
+BD              yes
+CD              yes
