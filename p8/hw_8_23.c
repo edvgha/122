@@ -13,7 +13,8 @@ int main()
 {
     int i;
 
-    Signal (SIGUSR2, handler);
+    if (Signal(SIGUSR2, handler) == SIG_ERR)
+        unix_error("signal error");
 
     if (Fork() == 0) {
         for (i = 0; i < 5; i++) {

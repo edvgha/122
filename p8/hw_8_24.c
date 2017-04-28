@@ -9,10 +9,10 @@ int main()
     /* Parent creates N children */
     for (i = 0; i < N; i++)                   
         if ((pid = Fork()) == 0) { /* child */  
-            int a[4];
-            a[7] = 99;
-            printf("CHILD r %d\n", a[11]);
- //           exit(0);
+            int* address = 0x40313c;
+            *address = 44;
+            /*raise(SIGSEGV);*/
+            exit(0);
         }
 
     /* Parent reaps N children in no particular order */
@@ -20,9 +20,12 @@ int main()
         if (WIFEXITED(status))                
             printf("child %d terminated normally with exit status=%d\n",
                     pid, WEXITSTATUS(status)); 
-        if (WIFSIGNALED(status))
-            printf("valod child %d sig number %d\n", pid, WTERMSIG(status));
-        else
+        else if (WIFSIGNALED(status)) {
+            char* msg;
+            asprintf(&msg, "child %d terminated by signal %d", pid, WTERMSIG(status));
+            psignal(WTERMSIG(status), msg);
+            free(msg);
+        } else
             printf("child %d terminated abnormally\n", pid);
     }
 
