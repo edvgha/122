@@ -1,0 +1,27 @@
+address = 0x03d7
+
+00 0011 1101 0111
+
+VPN         1111
+TLB index   11
+TLB tag     11
+TLB hit     Y(0x0d)
+Page fault  N
+PPN         0x0d
+
+physical address - 11 0101 0111 = 0x357
+
+0011 0101 0111
+
+Cache
+---------------------------
+Byte offset - 11
+---------------------------
+Cache index - 0101
+---------------------------
+Cache tag - 1101
+---------------------------
+Cache hit? - Y
+---------------------------
+Cache byte returned - 0x1D
+---------------------------
