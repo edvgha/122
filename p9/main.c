@@ -17,6 +17,7 @@ int main()
     mm_free(p1);
     mm_free(p3);
     mm_free(p5);
+    void* p7 = mm_malloc(1);
     printf("step1\n");
     display();
 }
