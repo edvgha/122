@@ -1,6 +1,6 @@
 #include "csapp.h"
 
-#define MAX_HEAP (1 >> 12)
+#define MAX_HEAP (1 << 16)
 
 static char* mem_heap;
 static char* mem_brk;
@@ -18,6 +18,7 @@ void* mem_sbrk(int incr)
     char* old_brk = mem_brk;
 
     if ((incr < 0) || ((mem_brk + incr) > mem_max_addr)) {
+        printf("mem_brk %p incr %d mem_max_addr %p\n", mem_brk, incr, mem_max_addr);
         errno = ENOMEM; /* Out of memory */
         fprintf(stderr, "ERROR: mem_sbrk failed. Ran out of memory...\n");
         return (void *)-1;

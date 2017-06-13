@@ -103,6 +103,15 @@ static void place(void* bp, size_t asize)
     }
 }
 
+void display()
+{
+    void* bp;
+
+    for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
+        printf("SIZE : %d ALLOC : %d\n", GET_SIZE(HDRP(bp)), GET_ALLOC(HDRP(bp)));
+    }
+}
+
 int mm_init(void)
 {
     if ((heap_listp = mem_sbrk(4 * WSIZE)) == (void *)-1)
