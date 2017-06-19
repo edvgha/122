@@ -1,0 +1,11 @@
+ptr     yes yes yes
+cnt     no  yes yes
+i.m     yes no  no
+msgs.m  yes yes yes
+myid.p0 no  yes no
+myid.p1 no  no  yes
+
+Shared ( are referenced by more than on thread => thus are shared)
+ptr
+cnt
+msgs.m
