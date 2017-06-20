@@ -1,0 +1,3 @@
+A. H1, L1, U1, S1, H2, L2, U2, S2, T2, T1 SAFE
+B. H2, L2, H1, L1, U1, S1, T1, U2, S2, T2 UNSAFE
+C. H1, H2, L2, U2, S2, L1, U1, S1, T1, T2 SAFE
