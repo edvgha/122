@@ -25,7 +25,7 @@ void echo_cnt(int connfd)
     Rio_readinitb(&rio, connfd);
     while((n = Rio_readlineb(&rio, buf, MAXLINE)) != 0) {
         P(&mutex);
-        byte_cnt += n; //line:conc:pre:cntaccess1
+        byte_cnt += n;
         printf("thread %d received %d (%d total) bytes on fd %d\n", 
                 (int) pthread_self(), n, byte_cnt, connfd);
         V(&mutex);
