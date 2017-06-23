@@ -1,0 +1,29 @@
+A.
+
+P(a)    P(c)    -
+P(a,b)  P(c)    -
+P(a)    P(c,b)  -
+p(a)    p(c)    -
+p(a)    -       -
+p(a, c) -       -
+p(a)    -       -
+-       -       p(c)
+-       p(a)    -
+-       -       p(b)
+-       -       p(a)
+-       -       p(b)
+-       -       -
+
+
+B.
+Thread 1
+
+C.
+In Thread 1
+
+P(c)
+V(c)
+P(a)
+P(b)
+V(b)
+V(a)

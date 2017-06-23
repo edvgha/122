@@ -24,7 +24,7 @@ int main(int argc, char **argv)
         exit(0);
     }
     port = atoi(argv[1]);
-    sbuf_init(&sbuf, SBUFSIZE); //line:conc:pre:initsbuf
+    sbuf_init(&sbuf, SBUFSIZE);
     listenfd = Open_listenfd(port);
 
     for (i = 0; i < NTHREADS; i++)  /* Create worker threads */
@@ -40,7 +40,7 @@ void *thread(void *vargp)
 {  
     Pthread_detach(pthread_self()); 
     while (1) { 
-        int connfd = sbuf_remove(&sbuf); /* Remove connfd from buffer */ //line:conc:pre:removeconnfd
+        int connfd = sbuf_remove(&sbuf); /* Remove connfd from buffer */
         echo_cnt(connfd);                /* Service client */
         Close(connfd);
     }
