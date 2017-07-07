@@ -937,7 +937,6 @@ ssize_t Rio_readlineb(rio_t *rp, void *usrbuf, size_t maxlen)
  */
 /* $begin open_clientfd */
 int open_clientfd(char *hostname, char *port) {
-
     int clientfd, rc;
     struct addrinfo hints, *listp, *p;
 
@@ -946,7 +945,6 @@ int open_clientfd(char *hostname, char *port) {
     hints.ai_socktype = SOCK_STREAM;  /* Open a connection */
     hints.ai_flags = AI_NUMERICSERV;  /* ... using a numeric port arg. */
     hints.ai_flags |= AI_ADDRCONFIG;  /* Recommended for connections */
-
     if ((rc = getaddrinfo(hostname, port, &hints, &listp)) != 0) {
         fprintf(stderr, "getaddrinfo failed (%s:%s): %s\n", hostname, port, gai_strerror(rc));
         return -2;
@@ -969,7 +967,6 @@ int open_clientfd(char *hostname, char *port) {
 
     /* Clean up */
     freeaddrinfo(listp);
-
     if (!p) /* All connects failed */
         return -1;
     else    /* The last connect succeeded */
