@@ -1,0 +1,9 @@
+Link 10 Mbps
+Prop speed 2.4 * 10 ^ 8 meters/sec
+
+distanse between geostationarysatellite and earth is 36 * 10 ^ 6
+a) 0.36 * 10 ^ 8 / 2.4 * 10 ^ 8 = 0.15 sec
+
+b) R * d_prop = 10 ^ 7 * 0.15 = 15 * 10 ^ 5
+
+c) size of photo x every 60 sec, 10 Mbps , 600 megabit

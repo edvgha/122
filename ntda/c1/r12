@@ -1,0 +1,15 @@
+circuit - guaranteed constant rate
+          dedicated end to end connection between two hosts
+
+640.000 bits
+
+TDM 24 slots , bit rate 1.536 Mbps
+500 msec - end-to-end connection establish
+
+each circuit - (1.536 Mbps) / 24 = 64 Kbps => (640.000 bits / 64 Kbps) = 10 second
+
+=> finally 10 + 0.5  = 10.5
+
+packet switching - better sharing of transmission capacity
+
+TDM vs FDM in TDM we can use full band

@@ -1,0 +1,5 @@
+a) 2 * 10^7 / 25 * 10^7 = 0.08 sec => 2 Mbps * 0.08 sec = 0.16 Mb
+b) 0.08 sec * 2 * 10^6 bits = 160000 bits
+c) max bits in link
+d) 125 meter
+e) propagation_speed * 1/R

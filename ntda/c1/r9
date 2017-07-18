@@ -1,0 +1,8 @@
++--------+-------------------+--------------------+
+| acc pt | transmission rate | shared / dedicated |
++--------+-------------------+--------------------+
+|Dial-Up |56Kbps             |      shared        | (slow DSL)
+|HFC     |30.7/42.8          |      shared        | (coax cable + fiber cable)
+|DSL     |1.8/12|2.5/24 Mbps |      shared        | (using local telephone infrastructure)
+|FTTH    |20/ - x Gbps       |      dedicated     | (fiber to the home)
++--------+-------------------+--------------------+

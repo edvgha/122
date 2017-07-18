@@ -1,0 +1,17 @@
+Let N denote the average number of packets in the buffer plus the packet being transmitted (packet)
+
+Let a denote the rate of packets arriving at the link (packet/msec)
+
+Let d denote the average total delay (msec)
+
+Little’s formula is N = a · d
+
+N = 10 packet;
+queue-delay = 10 msec;
+transmission-rate = 100 packet/sec
+
+a = (N + 1) / d;
+
+d = d_queue + d_transmission = 10 + 10
+
+=> 11 / 20;

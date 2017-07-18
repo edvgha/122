@@ -1,0 +1,9 @@
+Gbps = 10^9
+
+Dist = 2 * 10^7 meters
+Prop speed = 2.5 * 10^8 meters/sec
+R = 1Gbps
+
+a) R * d_prop = 10^9 b/s * (2 * 10^7 / 2.5 * 10^8) sec = 10^9 * 2 / 25 = 0.08 * 10^9 
+b) 2.5 * 10^8 / 10 ^9 = 0.25 => all 800.000
+c) 0.25 meters

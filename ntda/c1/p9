@@ -1,0 +1,2 @@
+a) 10000
+b) sum (from i = N+1 ... M) (M, i) * p^i * (1 - p)^(M - i)

@@ -1,0 +1,7 @@
+packet 1000 bytes
+link 2500 km speed 2.5*10^8 m/s
+transmission rate 2 Mbps
+
+2.5 * 10^6/ 2.5 * 10^8 = 1/ 10^2 == 0.001 second
+----------------------------------
+d/s

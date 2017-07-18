@@ -1,0 +1,11 @@
+a) R1 = 500 kbps
+
+1 kb - 1000 kilo bit
+
+
+b) 4000000 * 8 / 500 kbps 
+   32 * 10^6 / 5 * 10^5 = 320 / 5 = 64 sec
+
+c) 32 * 10^6 / 100 kbps
+   32 * 10^6 / 10 ^ 5 bit per second
+   320 second

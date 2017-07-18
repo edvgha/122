@@ -1,0 +1,15 @@
+application - message
+transport   - segment (transports messages from application layer)
+network     - datagram (moving datagrams from one host to another)
+              delivering the segment to the trasport layer in the destination host
+link        - frame (deliver datagram though link to next router/destination)
+physical    - move individual bits from one node to next
+
+error recovery can be duplicated by layers
+
+tasks
+error handling 
+connection setup
+segmentation
+re-assebling
+trafic control

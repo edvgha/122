@@ -1,0 +1,5 @@
+application layer packet - message
+transport layer packet - segment
+network layer packet - datagram
+link layer packet - frame
+Open Systems Interconnection - OSI

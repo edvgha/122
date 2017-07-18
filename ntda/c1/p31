@@ -1,0 +1,8 @@
+message 8 * 10 ^ 6 bits
+link 2 Mbps
+
+a) 4 sec, 12 sec
+b) 800 packets each 10.000 bits 
+1. 10 ^ 4 / 2 * 10 ^ 6 = 0.005 sec
+2. 2 * 0.005 sec
+c) 3 * 0.005 + 0.005 * (800 - 1)
