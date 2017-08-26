@@ -1,0 +1,5 @@
+web:http
+file transer : FTP
+e-mail : SMTP
+bittorrent: bittorrent protocol
+remote logn : telnet

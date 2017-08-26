@@ -1,0 +1,4 @@
+telnet gov.com 80
+
+GET / HTTP/1.0
+If-Modified-Since: Thu, 24 Aug 2017 06:20:00 GMT

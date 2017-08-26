@@ -1,0 +1,500 @@
+  116  vim cooked_literals.cc 
+  117  g++ cooked_literals.cc -std=c++14
+  118  vim cooked_literals.cc 
+  119  g++ cooked_literals.cc -std=c++14
+  120  ./a.out 
+  121  ssh crawler001.staging.area1.internal
+  122  ssh crawlerdev001.development.area1.internal
+  123  cd ~
+  124  cd work/cpp/
+  125  vim snprintf.cc
+  126  g++ snprintf.cc 
+  127  ./a.out 
+  128  vim snprintf.cc
+  129  g++ snprintf.cc 
+  130  vim snprintf.cc
+  131  g++ snprintf.cc 
+  132  ./a.out 
+  133  vim snprintf.cc
+  134  vim snprintf.cc
+  135  g++ snprintf.cc 
+  136  ./a.out 
+  137  vim snprintf.cc 
+  138  g++ snprintf.cc 
+  139  g++ snprintf.cc 
+  140  vim snprintf.cc 
+  141  g++ snprintf.cc 
+  142  ./a.out 
+  143  ./a.out  &> log
+  144  vim log
+  145  log
+  146  rm log
+  147  vim snprintf.cc 
+  148  g++ snprintf.cc 
+  149  ./a.out 
+  150  ./a.out &> log
+  151  vim log
+  152  vim snprintf.cc 
+  153  g++ snprintf.cc 
+  154  vim snprintf.cc 
+  155  g++ snprintf.cc 
+  156  ./a.out 
+  157  vim snprintf.cc 
+  158  g++ snprintf.cc 
+  159  ./a.out 
+  160  vim snprintf.cc 
+  161  vim snprintf.cc 
+  162  g++ snprintf.cc 
+  163  ./a.out 
+  164  vim snprintf.cc 
+  165  vim log
+  166  vim snprintf.cc 
+  167  g++ snprintf.cc 
+  168  ./a.out 
+  169  pwd
+  170  ssh crawlerdev001.development.area1.internal
+  171  exit
+  172  ssh crawlerdev001.development.area1.internal
+  173  ssh crawlerdev001.development.area1.internal
+  174  vim ~/Downloads/RejetCalendrier 
+  175  ssh crawlerdev001.development.area1.internal
+  176  exit
+  177  telnet aol.com 25
+  178  telnet Smtp.aol.com 25
+  179  telnet yahoo.com 25
+  180  telnet mail.yahoo.com 25
+  181  telnet smtp.mail.yahoo.com 25
+  182  telnet plus.smtp.mail.yahoo.com
+  183  telnet plus.smtp.mail.yahoo.com 25
+  184  telnet plus.smtp.mail.yahoo.com 465
+  185  telnet plus.smtp.mail.yahoo.com 25
+  186  telnet smtp.gmail.com 465
+  187  telnet plus.smtp.mail.yahoo.com 25
+  188  telnet plus.smtp.mail.yahoo.com 465
+  189  telnet plus.smtp.mail.yahoo.com 465
+  190  telnet plus.smtp.mail.yahoo.com 25
+  191  telnet smtp.mail.yahoo.com 25
+  192  telnet gomer.wiscnet.net 25
+  193  telnet  mail1.fabrikam.com 25
+  194  telnet mail.contoso.com 25
+  195  telnet mail.test.com 25
+  196  telnet pop.mail.yahoo.com  110
+  197  telnet pop.mail.yahoo.com  995
+  198  telnet pop.mail.yahoo.com  110
+  199  exit
+  200  telnet mail.comcast.net 110
+  201  exit
+  202  python strclnt.py localhost 2000 
+  203  exit
+  204  pwd
+  205  cd work
+  206  ls
+  207  mkdir python
+  208  cd python/
+  209  pwd
+  210  vim fme.py
+  211  python fme.py 
+  212  vim fme.py
+  213  python fme.py 
+  214  vim math.py
+  215  python math.py 
+  216  vim math.py
+  217  python
+  218  python
+  219  rm math.py
+  220  python
+  221  ls
+  222  rm math.pyc 
+  223  python 
+  224  ls
+  225  vim m.py
+  226  python m.py 
+  227  vim m.py
+  228  python m.py 
+  229  vim in.txt
+  230  vim tme.py
+  231  python tme.py 
+  232  vim tme.py
+  233  python tme.py in.txt 
+  234  vim in.txt 
+  235  vim in1.txt
+  236  python tme.py in1.txt 
+  237  vim tme.py 
+  238  vim l.py
+  239  python
+  240  ls
+  241  rm l.py 
+  242  ls
+  243  ls
+  244  vim modules_so_far
+  245  python
+  246  ls
+  247  vim fme.py 
+  248  python fme.py 
+  249  python
+  250  cp fme.py fme2.py
+  251  vim fme2.py 
+  252  python
+  253  python fme2.py
+  254  vim FinalGrades.py
+  255  rm FinalGrades.py 
+  256  vim tfe.py
+  257  ls
+  258  vim in2.txt
+  259  vim tfe.py 
+  260  python tfe.py 
+  261  vim tfe.py 
+  262  vim in1.txt 
+  263  python tfe.py 
+  264  vim tfe.py 
+  265  python tfe.py 
+  266  vim tfe.py 
+  267  python tfe.py 
+  268  vim tfe.py 
+  269  python tfe.py 
+  270  python tfe.py 
+  271  vim tfe.py 
+  272  python tfe.py 
+  273  vim tfe.py 
+  274  python tfe.py 
+  275  vim tfe.py 
+  276  python tfe.py 
+  277  vim tfe.py 
+  278  python tfe.py 
+  279  vim tfe.py 
+  280  python tfe.py 
+  281  vim tfe.py 
+  282  python tfe.py 
+  283  vim tfe.py 
+  284  python tfe.py 
+  285  vim tfe.py 
+  286  python tfe.py 
+  287  vim tfe.py 
+  288  python tfe.py 
+  289  wpd
+  290  pwd
+  291  m.py
+  292  vim m.py
+  293  pwd
+  294  vim tfe.py 
+  295  python tfe.py 
+  296  vim tf.py
+  297  vim tftest.py
+  298  rm tfe.py 
+  299  vim tftest.py 
+  300  python tftest.py 
+  301  vim tftest.py 
+  302  python tftest.py 
+  303  vim tftest.py 
+  304  python tftest.py 
+  305  python
+  306  vim tf.py
+  307  python
+  308  python
+  309  vim bintree.py
+  310  pwd
+  311  vim trybt1.py
+  312  python trybt1.py 
+  313  vim bintree.py 
+  314  python trybt1.py 
+  315  vim bintree.py 
+  316  python trybt1.py 
+  317  vim bintree.py 
+  318  vim trybt1.py 
+  319  vim trybt1.py 
+  320  python trybt1.py 4
+  321  vim bintree.py
+  322  vim bintree.py
+  323  python trybt1.py 4
+  324  python trybt1.py 1 2 3 4 5
+  325  python trybt1.py 5 4 3 2 1
+  326  vim trybt1.py 
+  327  python trybt1.py 5 4 3 2 1
+  328  vim trybt1.py 
+  329  python trybt1.py 1 3 2 4 6 5
+  330  python trybt1.py abc tuv 12
+  331  cp trybt1.py trybt2.py 
+  332  vim trybt2.py 
+  333  python trybt2.py abc tuv 12
+  334  cp trybt2.py trybt3.py
+  335  vim trybt3.py 
+  336  python trybt3.py 
+  337  python
+  338  pydoc string.center
+  339  pydoc sys
+  340  ls
+  341  vim trybt3.py 
+  342  chmod 777 trybt3.py 
+  343  ./trybt3.py 
+  344  vim trybt3.py 
+  345  ./trybt3.py 
+  346  mkdir a
+  347  vim x
+  348  vim y
+  349  mkdir b
+  350  python
+  351  python
+  352  ls
+  353  vim x
+  354  mv b x y z a
+  355  mv gy a
+  356  cd a/
+  357  ls
+  358  python
+  359  cd ..
+  360  ls
+  361  vim walkex.py
+  362  python walkex.py ./a
+  363  vim walkex.py 
+  364  python walkex.py ./a
+  365  ls
+  366  vim tf1.py
+  367  vim tf1.py 
+  368  python tf1.py 
+  369  vim tf1.py 
+  370  python tf1.py 
+  371  vim in1.txt 
+  372  grep -R 'main' .
+  373  vim trybt3.py 
+  374  vim primefact.py
+  375  vim primefact.py
+  376  python primefact.py 
+  377  vim primefact.py
+  378  python primefact.py 
+  379  vim primefact.py
+  380  python primefact.py 
+  381  vim primefact.py
+  382  vim primefact.py
+  383  vim primefact.py
+  384  python primefact.py 
+  385  vim primefact.py
+  386  vim tms.py
+  387  vim tmc.py
+  388  vim tms.py 
+  389  python tmc.py localhost 2000 abc
+  390  vim tmc.py 
+  391  vim tmc.py 
+  392  python tmc.py localhost 2000 abc
+  393  python tmc.py localhost 2000 abc
+  394  python tmc.py localhost 2001 abc
+  395  ls
+  396  vim modules_so_far 
+  397  w
+  398  man w
+  399  vim wps.py
+  400  vim svr.py
+  401  python wps.py localhost 2000 ps
+  402  vim wps.py 
+  403  python wps.py localhost 2000 ps
+  404  python wps.py localhost 2000 s
+  405  python wps.py localhost 2000 w
+  406  vim strclnt.py
+  407  vim strsvr.py
+  408  python strclnt.py 2000
+  409  python strclnt.py localhost 2000
+  410  vim strclnt.py 
+  411  ls
+  412  vim modules_so_far 
+  413  vim modules_so_far 
+  414  vim getlinks.py
+  415  python getlinks.py 
+  416  vim getlinks.py
+  417  vim getlinks.py 
+  418  vim getlinks.py &> log
+  419  python srvr.py 2000
+  420  python srvr.py 2001
+  421  python srvr.py 2000
+  422  vim prime_numbers.py
+  423  vim modules_so_far 
+  424  vim prime_numbers.py
+  425  chmod 777 prime_numbers.py 
+  426  ./prime_numbers.py 11 3
+  427  vim prime_numbers.py 
+  428  ./prime_numbers.py 11 3
+  429  ls
+  430  vim modules_so_far 
+  431  ls
+  432  cd a/
+  433  ls
+  434  mv z b
+  435  cd ..
+  436  python tms.py 2000
+  437  python tms.py 2000
+  438  python tms.py 2000
+  439  python tms.py 2001
+  440  python svr.py 2000
+  441  vim svr.py 
+  442  python svr.py 2000
+  443  python strsvr.py 2000
+  444  vim strsvr.py 
+  445  python strsvr.py 2000
+  446  python getlinks.py 
+  447  vim getlinks.py 
+  448  python getlinks.py 
+  449  vim clnt.py
+  450  vim srvr.py
+  451  python clnt.py localhost 2000
+  452  vim prime_numbers.py 
+  453  ps
+  454  kill -9 10991
+  455  vim prime_numbers.py 
+  456  vim prime_numbers.py 
+  457  vim prime_numbers.py 
+  458  vim prime_numbers.py 
+  459  vim prime_numbers.py 
+  460  vim prime_numbers.py 
+  461  vim acc_time.py
+  462  vim list
+  463  man wget 
+  464  vim acc_time.py 
+  465  chmod acc_time.py 
+  466  chmod acc_time.py 777
+  467  chmod 777 acc_time.py 
+  468  ./acc_time.py list 8
+  469  ./acc_time.py list 8 2
+  470  vim acc_time.py 
+  471  vim acc_time.py 
+  472  vim acc_time.py 
+  473  ./acc_time.py list 8 2
+  474  vim acc_time.py 
+  475  ./acc_time.py list 8 2
+  476  python clnt.py localhost 2000
+  477  vim clnt.py 
+  478  python clnt.py localhost 2000
+  479  vim clnt.py 
+  480  python clnt.py localhost 2000
+  481  vim clnt.py 
+  482  python clnt.py localhost 2001
+  483  vim clnt.py 
+  484  python clnt.py localhost 2000
+  485  vim prime_numbers.py 
+  486  ./prime_numbers.py 11 2
+  487  ./prime_numbers.py 11 2
+  488  ./prime_numbers.py 11 2
+  489  ./prime_numbers.py 11 2
+  490  ./prime_numbers.py 11 2
+  491  ./prime_numbers.py 11 2
+  492  ./prime_numbers.py 11 2
+  493  ./prime_numbers.py 11 2
+  494  ./prime_numbers.py 1 1
+  495  vim list 
+  496  ./acc_time.py list 1 1
+  497  ./acc_time.py list 1 2
+  498  wget --spider -q http://www.yahoo.com
+  499  vim list 
+  500  ./acc_time.py list 1 2
+  501  ls
+  502  cd work/python/
+  503  vim acc_time.py 
+  504  ./acc_time.py list 1 2
+  505  ./acc_time.py list 10 2
+  506  ls
+  507  vim .
+  508  vim modules_so_far 
+  509  vim .
+  510  vim srvr1.py
+  511  vim modules_so_far 
+  512  vim srvr1.py 
+  513  chmod 777 srvr1.py 
+  514  vim srvr1.py 
+  515  ./srvr1.py 2000 2
+  516  vim prime_numbers1.py 
+  517  chmod 777 prime_numbers1.py 
+  518  ./prime_numbers1.py 10 2
+  519  vim prime_numbers1.py 
+  520  ./prime_numbers1.py 10 2
+  521  vim prime_numbers1.py 
+  522  ./prime_numbers1.py 10 2
+  523  vim prime_numbers1.py 
+  524  vim DiceProb.py
+  525  vim DiceProb.py
+  526  python DiceProb.py 2 22 2 2
+  527  vim DiceProb.py 
+  528  python DiceProb.py 2 22 2 2
+  529  python DiceProb.py 2 11 2 2
+  530  python DiceProb.py 2 11 2 2
+  531  python DiceProb.py 2 11 2 10
+  532  python DiceProb.py 2 7 20 4
+  533  vim DiceProb.py 
+  534  ls
+  535  pwd
+  536  vim FibIter.py
+  537  chmod 777 FibIter.py 
+  538  ./FibIter.py 
+  539  vim FibIter2.py 
+  540  chmod 777 FibIter2.py 
+  541  ./FibIter2.py 
+  542  vim CircularQueue.py
+  543  vim FibIter.py 
+  544  vim CircularQueue.py 
+  545  python
+  546  mv CircularQueue.py cq.py
+  547  vim cq.py 
+  548  python
+  549  vim File01.py
+  550  vim u
+  551  python File01.py u 3
+  552  python File01.py u 2
+  553  vim File01.py 
+  554  vim v
+  555  python File01.py v 3
+  556  vim File01.py 
+  557  python File01.py v 3
+  558  python File01.py u 3
+  559  python File01.py u 2
+  560  vim FibIter2.py 
+  561  vim WordFetch.py
+  562  vim WordFetch.py
+  563  chmod 777 WordFetch.py 
+  564  ./WordFetch.py 
+  565  vim in1.txt 
+  566  vim WordFetch.py
+  567  ./WordFetch.py 
+  568  python WordFetch.py 
+  569  vim WordFetch.py 
+  570  python WordFetch.py 
+  571  vim WordFetch.py 
+  572  python WordFetch.py 
+  573  vim WordFetch.py 
+  574  vim yieldex.py
+  575  python yieldex.py 
+  576  vim yieldex.py 
+  577  vim fibg.py
+  578  python
+  579  vim fibg.py
+  580  vim getword.py
+  581  vim testgw.py
+  582  python testgw.py in1.txt 
+  583  ls
+  584  pwd
+  585  pwd
+  586  ls
+  587  ls
+  588  ls
+  589  pwd
+  590  pwd
+  591  pwd
+  592  cd ../122/
+  593  ls
+  594  cd ntda/
+  595  ls
+  596  mkdir c2
+  597  ls c1
+  598  cd c2/
+  599  ls
+  600  vim UDPClient.py
+  601  vim UDPCServer.py
+  602  vim UDPCC
+  603  vim UDPClient.py 
+  604  ls
+  605  mv UDPCServer.py UDPServer.py
+  606  vim UDPServer.py 
+  607  vim UDPServer.py 
+  608  chmod 777 UDPClient.py 
+  609  chmod 777 UDPServer.py 
+  610  vim UDPClient.py 
+  611  ./UDPClient.py 
+  612  ./UDPClient.py 
+  613  ./TCPClient.py 
+  614  telnet 
+  615  history &> log
