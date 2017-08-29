@@ -1,0 +1,13 @@
+dele 1
+retr 2
+dele 2
+quit
+
+
+retr 2
+quit
+
+list
+retr 1
+retr 2
+quit

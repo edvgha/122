@@ -1,0 +1,3 @@
+HTTP from Alice's host to mail server
+SMTP from Alice's mail server to Bob's mail server
+POP3 form Bob's mail server to Bob's client

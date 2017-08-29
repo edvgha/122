@@ -1,0 +1,4 @@
+http://www.thegeekstuff.com/2012/02/dig-command-examples/
+-----------------------------
+dig @ns1.redhat.com redhat.com
+dig mail.ru +trace

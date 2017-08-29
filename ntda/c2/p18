@@ -1,0 +1,7 @@
+a) who is responsible for a domain name or an IP address?
+b) whois cnn.com [NS-1086.AWSDNS-07.ORG]
+   whois bbc.com [NS3.BBC.CO.UK]
+c) http://www.thegeekstuff.com/2012/07/nslookup-examples/?utm_source=tuicool
+d)
+e) dig google.com +short
+   whois -h whois.arin.net {ip from dig}
