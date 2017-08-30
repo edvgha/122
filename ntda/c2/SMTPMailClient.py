@@ -5,9 +5,11 @@ import socket
 msg = "\r\n I love computer networkds!"
 endmsg = "\r\n.\r\n"
 # Choose a mail server (e.g. Google mail server) and call it mailserver
-mailserver = #TODO
+mailserver = 'smtp.comcast.net'
+port = 587
 # Create socket called clientSocket and establish a TCP connection with mailserver
-#TODO
+clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+clientSocket.connect((mailserver, port))
 recv = clientSocket.recv(1024)
 print recv
 if recv[:3] != '220':
