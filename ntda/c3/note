@@ -1,0 +1,4 @@
+Transport - leyer protocol provides logical communication between processes
+Network - leyer protocol provides logical communication between hosts
+IP service model - best effort  deliverym service
+extending host-to-host deliverym to process-to-process deliverym is called - transport leyer multiplexing and demultiplexing
