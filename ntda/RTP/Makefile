@@ -2,13 +2,13 @@ CC = gcc
 CFLAGS = -g -Wall
 LDFLAGS = -lpthread
 
-all: prog2
+all: abp
 
-prog2.o: prog2.c
-	$(CC) $(CFLAGS) -c prog2.c
+abp.o: abp.c
+	$(CC) $(CFLAGS) -c abp.c
 
-prog2: prog2.o 
-	$(CC) $(CFLAGS) prog2.o -o prog2 $(LDFLAGS)
+abp: abp.o 
+	$(CC) $(CFLAGS) abp.o -o abp $(LDFLAGS)
 
 clean:
-	rm -f *.o prog2
+	rm -f *.o abp

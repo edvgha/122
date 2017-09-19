@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdint.h>
+#include <string.h>
 
 /* ******************************************************************
    ALTERNATING BIT AND GO-BACK-N NETWORK EMULATOR: VERSION 1.1  J.F.Kurose
@@ -37,14 +39,110 @@ struct pkt {
 };
 
 /********* STUDENTS WRITE THE NEXT SEVEN ROUTINES *********/
+void tolayer3(int AorB,struct pkt packet);
+void starttimer(int AorB, float increment);
+void stoptimer(int AorB);
+void tolayer5(int AorB, char datasent[20]);
 
+#define   A    0
+#define   B    1
+#define WAIT_FOR_CALL_0_FROM_ABOVE 0
+#define WAIT_FOR_ACK_0 1
+#define WAIT_FOR_CALL_1_FROM_ABOVE 2
+#define WAIT_FOR_ACK_1 3
+#define WAIT_FOR_0_FROM_BELOW 0
+#define WAIT_FOR_1_FROM_BELOW 1
 
+int a_state = WAIT_FOR_CALL_0_FROM_ABOVE;
+int b_state = WAIT_FOR_0_FROM_BELOW;
 
+struct A_send_buffer {
+    char data[2000];
+    int idx_rcv;
+    int idx_send;
+};
+
+struct A_send_buffer a_send_buffer;
+struct pkt last_sent_paket;
+
+union converter {
+    uint16_t d;
+    unsigned char c[2];
+};
+
+uint16_t get_checksum(int seq)
+{
+    uint32_t checksum = (uint32_t) seq;
+    union converter con;
+    for (int i = 0; i < 20; i += 2) {
+        con.c[0] = a_send_buffer.data[a_send_buffer.idx_send + i];
+        con.c[1] = a_send_buffer.data[a_send_buffer.idx_send + i + 1];
+        checksum += con.d;
+    }
+    checksum &= 0xffff;
+    uint16_t res = (uint16_t)checksum;
+    return ~res;
+}
+
+int is_corrupted(struct pkt paket)
+{
+    uint32_t checksum = (uint32_t)paket.seqnum + (uint32_t)paket.acknum;
+    union converter con;
+    for (int i = 0; i < 20; i += 2) {
+        con.c[0] = paket.payload[i];
+        con.c[1] = paket.payload[i + 1];
+        checksum += con.d;
+    }
+    checksum &= 0xffff;
+    uint16_t res = (uint16_t)checksum;
+    res += paket.checksum;
+    return (res == 0xffff) ? 0 : 1;
+}
+
+struct pkt make_ack(int ack, int seq, int checksum)
+{
+    struct pkt package;
+    package.acknum = ack;
+    package.seqnum = seq;
+    package.checksum = checksum;
+    for (int i = 0; i < 20; ++i) {
+        package.payload[i] = 0;
+    }
+    return package;
+}
+
+struct pkt make_pkt(int seq)
+{
+    struct pkt package;
+    package.seqnum = seq;
+    package.acknum = 0;
+    package.checksum = get_checksum(seq);
+    memcpy(package.payload, a_send_buffer.data + a_send_buffer.idx_send, 20);
+    a_send_buffer.idx_send = (a_send_buffer.idx_send + 20) % 2000;
+    last_sent_paket = package;
+    return package;
+}
 
 /* called from layer 5, passed the data to be sent to other side */
 void A_output(struct msg message)
 {
-    assert(1 == 2);
+    //save msg
+    memcpy(a_send_buffer.data + a_send_buffer.idx_rcv, message.data, 20);
+    a_send_buffer.idx_rcv = (a_send_buffer.idx_rcv + 20) % 2000;
+    if (a_state == WAIT_FOR_CALL_0_FROM_ABOVE) {
+        printf(">>>> A_output WAIT_FOR_CALL_0_FROM_ABOVE\n");
+        tolayer3(A, make_pkt(0));
+        starttimer(A, 6);
+        a_state = WAIT_FOR_ACK_0;
+        return;
+    } else if (a_state == WAIT_FOR_CALL_1_FROM_ABOVE) {
+        printf(">>>> A_output WAIT_FOR_CALL_1_FROM_ABOVE\n");
+        tolayer3(A, make_pkt(1));
+        starttimer(A, 6);
+        a_state = WAIT_FOR_ACK_1;
+        return ;
+    }
+    printf(" -------> CAN'T SERVE\n");
 }
 
 void B_output(struct msg message)  /* need be completed only for extra credit */
@@ -55,42 +153,102 @@ void B_output(struct msg message)  /* need be completed only for extra credit */
 /* called from layer 3, when a packet arrives for layer 4 */
 void A_input(struct pkt packet)
 {
-    assert(1 == 2);
+    if (a_state == WAIT_FOR_ACK_0) {
+        if ((packet.acknum == 1 && packet.seqnum == 1) || 1 == is_corrupted(packet)) {
+            printf(">>>> a_input wait_for_ack_0 curropted\n");
+            return ;
+        }
+        if (0 == is_corrupted(packet) && (packet.acknum == 1 && packet.seqnum == 0)) {
+            stoptimer(A);
+            a_state = WAIT_FOR_CALL_1_FROM_ABOVE;
+            printf(">>>> a_input wait_for_ack_0\n");
+        }
+    } else if (a_state == WAIT_FOR_ACK_1) {
+        if ((packet.acknum == 1 && packet.seqnum == 0) || 1 == is_corrupted(packet)) {
+            printf(">>>> a_input wait_for_ack_1 curropted\n");
+            return ;
+        }
+        if (0 == is_corrupted(packet) && (packet.acknum == 1 && packet.seqnum == 1)) {
+            stoptimer(A);
+            a_state = WAIT_FOR_CALL_0_FROM_ABOVE;
+            printf(">>>> a_input wait_for_ack_1\n");
+        }
+    }
 }
 
 /* called when A's timer goes off */
 void A_timerinterrupt()
 {
-    assert(1 == 2);
+    if (a_state == WAIT_FOR_ACK_0) {
+        starttimer(A, 6);
+        tolayer3(A, last_sent_paket);
+        printf(">>>> a_timerinterrupt WAIT_FOR_ACK_0\n");
+    } else if (a_state == WAIT_FOR_ACK_1) {
+        starttimer(A, 6);
+        tolayer3(A, last_sent_paket);
+        printf(">>>> a_timerinterrupt WAIT_FOR_ACK_1\n");
+    }
 }  
 
 /* the following routine will be called once (only) before any other */
 /* entity A routines are called. You can use it to do any initialization */
 void A_init()
 {
-    assert(1 == 2);
+    a_send_buffer.idx_rcv = 0;
+    a_send_buffer.idx_send = 0;
 }
 
 
 /* Note that with simplex transfer from a-to-B, there is no B_output() */
 
+int checksum_ack_seq(int ack, int seqnum)
+{
+    uint16_t d = (uint16_t)ack + (uint16_t)(seqnum);
+    d &= 0xffff;
+    return ~d;
+}
+
 /* called from layer 3, when a packet arrives for layer 4 at B*/
 void B_input(struct pkt packet)
 {
-    assert(1 == 2);
+    if (b_state == WAIT_FOR_0_FROM_BELOW) {
+        if (packet.seqnum == 0 && 0 == is_corrupted(packet)) {
+            printf(">>>> b_input WAIT_FOR_0_FROM_BELOW ---> deliver data\n");
+            tolayer5(B, packet.payload);
+            tolayer3(B, make_ack(1, 0, checksum_ack_seq(1, 0)));
+            b_state = WAIT_FOR_1_FROM_BELOW;
+            return ;
+        } else if (packet.seqnum == 1 || 1 == is_corrupted(packet)) {
+            printf(">>>> b_input WAIT_FOR_0_FROM_BELOW corrupted\n");
+            tolayer3(B, make_ack(1, 1, checksum_ack_seq(1, 1)));
+            return ;
+        }
+    } else if (b_state == WAIT_FOR_1_FROM_BELOW) {
+        if (packet.seqnum == 1 && 0 == is_corrupted(packet)) {
+            printf(">>>> b_input WAIT_FOR_1_FROM_BELOW ---> deliver data\n");
+            tolayer5(B, packet.payload);
+            tolayer3(B, make_ack(1, 1, checksum_ack_seq(1, 1)));
+            b_state = WAIT_FOR_0_FROM_BELOW;
+            return ;
+        } else if (packet.seqnum == 0 || 1 == is_corrupted(packet)) {
+            printf(">>>> b_input WAIT_FOR_1_FROM_BELOW corrupted\n");
+            tolayer3(B, make_ack(1, 0, checksum_ack_seq(1, 0)));
+            return ;
+        }
+    }
 }
 
 /* called when B's timer goes off */
 void B_timerinterrupt()
 {
-    assert(1 == 2);
+    return ;
 }
 
 /* the following rouytine will be called once (only) before any other */
 /* entity B routines are called. You can use it to do any initialization */
 void B_init()
 {
-    assert(1 == 2);
+    return ;
 }
 
 
@@ -127,8 +285,6 @@ struct event *evlist = NULL;   /* the event list */
 
 #define  OFF             0
 #define  ON              1
-#define   A    0
-#define   B    1
 
 
 
