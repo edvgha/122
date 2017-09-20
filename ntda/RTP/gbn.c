@@ -101,6 +101,7 @@ void A_output(struct msg message)
 {
     if (a_nextseqnum < a_base + a_window) {
         sndpkt[a_nextseqnum] = make_pkt(0, a_nextseqnum, message.data, checksum(0, a_nextseqnum, message.data));
+        printf(" ---> A send message from above we have root in window SEQNUM %d\n", a_nextseqnum);
         tolayer3(A, sndpkt[a_nextseqnum]);
         if (a_base == a_nextseqnum) {
             starttimer(A, 6);
@@ -118,20 +119,23 @@ void B_output(struct msg message)  /* need be completed only for extra credit */
 
 int getacknum(struct pkt packet)
 {
-    return packet.acknum;
+    return packet.seqnum;
 }
 
 /* called from layer 3, when a packet arrives for layer 4 */
 void A_input(struct pkt packet)
 {
     if (1 == is_corrupted(packet)) {
+        printf("A rcv ACK message from below : corrupted\n");
         return ;
     }
     a_base = getacknum(packet) + 1;
+    printf("---> A rcv ACK message from below : SEQNUM %d\n", a_base - 1);
     if (a_base == a_nextseqnum) {
+        printf(" we got all\n");
         stoptimer(A);
     } else {
-        starttimer(A, 6);
+        //starttimer(A, 6);
     }
 }
 
@@ -139,6 +143,7 @@ void A_input(struct pkt packet)
 void A_timerinterrupt()
 {
     starttimer(A, 6);
+    printf("A timeout resend from %d to %d\n", a_base, a_nextseqnum);
     for (int i = a_base; i < a_nextseqnum; ++i) {
         tolayer3(A, sndpkt[i]);
     }
@@ -161,6 +166,7 @@ void B_input(struct pkt packet)
 {
     if (0 == is_corrupted(packet) &&
         b_expectedseqnum == packet.seqnum) {
+        printf("B not corrupted *** DELIVERED *** : seqnum is %d\n", packet.seqnum);
         tolayer5(B, packet.payload);
         char message[20];
         for (int i = 0; i < 20; ++i) {
@@ -171,6 +177,7 @@ void B_input(struct pkt packet)
         ++b_expectedseqnum;
         return ;
     }
+    printf("B corrupted or not expected seq num\n");
     tolayer3(B, b_sndpkt);
 }
 
