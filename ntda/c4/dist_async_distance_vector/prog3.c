@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "rtpkt.h"
 
 #define LINKCHANGES 1 
 /* ******************************************************************
@@ -11,18 +12,14 @@ THIS IS THE MAIN ROUTINE.  IT SHOULD NOT BE TOUCHED AT ALL BY STUDENTS!
 **********************************************************************/
 
 
-/* a rtpkt is the packet sent from one routing update process to
-   another via the call tolayer3() */
-struct rtpkt {
-  int sourceid;       /* id of sending router sending this pkt */
-  int destid;         /* id of router to which pkt being sent 
-                         (must be an immediate neighbor) */
-  int mincost[4];    /* min cost to node 0 ... 3 */
-  };
-
 int TRACE = 1;             /* for my debugging */
 int YES = 1;
 int NO = 0;
+
+int min(int a, int b)
+{
+    return a < b ? a : b;
+}
 
 void creatertpkt(struct rtpkt* initrtpkt, int srcid,int destid,int mincosts[])
 {
@@ -76,7 +73,6 @@ void rtinit2();
 void rtinit3();
 void insertevent(struct event* p);
 void printevlist();
-void tolayer2(struct rtpkt packet);
 float jimsrand();
 
 int main()
