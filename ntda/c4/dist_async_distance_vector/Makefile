@@ -23,4 +23,4 @@ dist_async_dv: prog3.o node0.o node1.o node2.o node3.o
 	$(CC) $(CFLAGS) prog3.o node0.o node1.o node2.o node3.o -o dist_async_dv $(LDFLAGS)
 
 clean:
-	rm -f *.o abp gbn
+	rm -f *.o dist_async_dv

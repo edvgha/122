@@ -1,12 +1,11 @@
 #include <stdio.h>
 
-extern struct rtpkt {
+struct rtpkt {
   int sourceid;       /* id of sending router sending this pkt */
   int destid;         /* id of router to which pkt being sent 
                          (must be an immediate neighbor) */
   int mincost[4];    /* min cost to node 0 ... 3 */
-  };
-
+};
 
 extern int TRACE;
 extern int YES;
@@ -19,27 +18,17 @@ struct distance_table
   int costs[4][4];
 } dt1;
 
-
-/* students to write the following two routines, and maybe some others */
-
-
-rtinit1() 
+void rtinit1() 
 {
-
+    //TODO
 }
 
-
-rtupdate1(rcvdpkt)
-  struct rtpkt *rcvdpkt;
-  
+void rtupdate1(struct rtpkt* rcvdpkt)
 {
-
+    //TODO
 }
 
-
-printdt1(dtptr)
-  struct distance_table *dtptr;
-  
+void printdt1(struct distance_table* dtptr)
 {
   printf("             via   \n");
   printf("   D1 |    0     2 \n");
@@ -47,13 +36,9 @@ printdt1(dtptr)
   printf("     0|  %3d   %3d\n",dtptr->costs[0][0], dtptr->costs[0][2]);
   printf("dest 2|  %3d   %3d\n",dtptr->costs[2][0], dtptr->costs[2][2]);
   printf("     3|  %3d   %3d\n",dtptr->costs[3][0], dtptr->costs[3][2]);
-
 }
 
-
-
-linkhandler1(linkid, newcost)   
-int linkid, newcost;   
+void linkhandler1(int linkid, int newcost)   
 /* called when cost from 1 to linkid changes from current value to newcost*/
 /* You can leave this routine empty if you're an undergrad. If you want */
 /* to use this routine, you'll need to change the value of the LINKCHANGE */
@@ -61,5 +46,3 @@ int linkid, newcost;
 	
 {
 }
-
-
