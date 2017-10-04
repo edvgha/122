@@ -2,19 +2,25 @@ CC = gcc
 CFLAGS = -g -Wall
 LDFLAGS = -lpthread
 
-all: abp gbn
+all: dist_async_dv
 
-abp.o: abp.c
-	$(CC) $(CFLAGS) -c abp.c
+prog3.o: prog3.c
+	$(CC) $(CFLAGS) -c prog3.c
 
-gbn.o: gbn.c
-	$(CC) $(CFLAGS) -c gbn.c
+node0.o: node0.c
+	$(CC) $(CFLAGS) -c node0.c
 
-abp: abp.o 
-	$(CC) $(CFLAGS) abp.o -o abp $(LDFLAGS)
+node1.o: node1.c
+	$(CC) $(CFLAGS) -c node1.c
 
-gbn: gbn.o 
-	$(CC) $(CFLAGS) gbn.o -o gbn $(LDFLAGS)
+node2.o: node2.c
+	$(CC) $(CFLAGS) -c node2.c
+
+node3.o: node3.c
+	$(CC) $(CFLAGS) -c node3.c
+
+dist_async_dv: prog3.o node0.o node1.o node2.o node3.o
+	$(CC) $(CFLAGS) prog3.o node0.o node1.o node2.o node3.o -o dist_async_dv $(LDFLAGS)
 
 clean:
 	rm -f *.o abp gbn
