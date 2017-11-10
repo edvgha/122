@@ -25,6 +25,7 @@ class RtpPacket:
         header[9] = (ssrc >> 16) & 0xff
         header[10] = (ssrc >> 8) & 0xff
         header[11] = ssrc & 0xff
+        self.header = header
 
 # Get the payload from the argument
         self.payload = payload
@@ -41,6 +42,7 @@ class RtpPacket:
     def seqNum(self):
         """Return sequence (frame) number."""
         seqNum = self.header[2] << 8 | self.header[3]
+        print 'decode', seqNum
         return int(seqNum)
 
     def timestamp(self):

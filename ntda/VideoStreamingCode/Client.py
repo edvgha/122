@@ -237,7 +237,7 @@ class Client:
 # The play thread exits. A new thread is created on resume.
                         self.playEvent.set()
                     elif self.requestSent == self.TEARDOWN:
-                        self.state = INIT
+                        self.state = self.INIT
 
 # Flag the teardownAcked to close the socket.
                         self.teardownAcked = 1 
