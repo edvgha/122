@@ -15,13 +15,14 @@ uint16_t clearLSB(uint16_t d)
 	return (d & (d - 1));
 }
 
-uint16_t extractLSB(uint16_t d)
+uint16_t extractLSB(int d)
 {
 	//not always right
-	return (d & (~(d - 1)));
+	return (d & -d );
 }
 
 int main(int argc, char const *argv[])
 {
+    std::cout << extractLSB(24) << std::endl;
 	return 0;
 }
