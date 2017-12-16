@@ -1,6 +1,6 @@
 #include <iostream>
 #include <memory>
-#include <cmath>
+#include <cassert>
 
 template <typename T>
 struct ListNode
@@ -16,17 +16,16 @@ template <int n = 10>
 void build()
 {
     auto node = std::make_shared<ListNode<int>>();
-    node -> data_ = 1;
+    node -> data_ = n;
     head = node;
     tail = node;
 
     for (size_t i = 1; i < n; ++i) {
         node = std::make_shared<ListNode<int>>();
-        node -> data_ = i + 1;
+        node -> data_ = n - i;
         tail->next_ = node;
         tail = node;
     }
-    tail->next_ = head;
 }
 
 void print()
@@ -38,25 +37,33 @@ void print()
     }
 }
 
-bool hasCycle()
+void reverse(std::shared_ptr<ListNode<int>>& node)
 {
-    auto itSlow = head;
-    auto itFast = head;
-    while (itSlow && itFast) {
-        std::cout << "iter" << std::endl;
-        itSlow = itSlow->next_;
-        itFast = itFast->next_ ? itFast->next_->next_ : nullptr;
-        if ((itFast == itSlow) && itSlow && itFast) {
-            std::cout << itFast->data_ << ' ' << itSlow->data_ << std::endl;
-            return true;
-        }
+    if (!node->next_) {
+        return;
     }
-    return false;
+    reverse(node->next_);
+    auto tmp = node->next_;
+    tmp->next_ = node;
+    node->next_ = nullptr;
+}
+
+void reverse()
+{
+    reverse(head);
+
+    while (tail) {
+        std::cout << tail->data_ << std::endl;
+        tail = tail -> next_;
+    }
 }
 
 int main()
 {
     build<13>();
-    std::cout << std::boolalpha << hasCycle() << std::endl;
-    //print();
+    print();
+
+    std::cout << "-----" << std::endl;
+
+    reverse();
 }
