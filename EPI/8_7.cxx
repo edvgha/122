@@ -27,7 +27,18 @@ public:
 	void enqueue(T t)
 	{
 		if (size() == size_) {
-			//TODO
+            std::cout << " .... RESIZEING " << std::endl;
+            std::vector<T> v(size_ + 1, T());
+            for (size_t i = 0; i <= front_ % size_; ++i) {
+                v[i] = queue_[i];
+            }
+            for (size_t i = size_ - 1; i > back_ % size_; --i) {
+                v[i + 1] = queue_[i];
+            }
+            ++back_;
+            ++front_;
+            ++size_;
+            queue_ = v;
 		} 
 		queue_[++front_ % size_] = t;
 
@@ -44,6 +55,7 @@ public:
 		std::cout << "back : " << back_ << std::endl;
 		for (auto el : queue_)
 			std::cout << el << ", ";
+        std::cout << std::endl;
 	}
 
 };
@@ -54,14 +66,20 @@ int main(int argc, char const *argv[])
 	try {
 		queue.enqueue(1);
 		queue.enqueue(2);
-		queue.dequeue();
-		queue.dequeue();
 		queue.enqueue(3);
 		queue.enqueue(4);
+		std::cout << queue.dequeue() << std::endl;
+		std::cout << queue.dequeue() << std::endl;
+		std::cout << queue.dequeue() << std::endl;
 		queue.enqueue(5);
 		queue.enqueue(6);
 		queue.enqueue(7);
-
+		queue.enqueue(8);
+		std::cout << queue.dequeue() << std::endl;
+		std::cout << queue.dequeue() << std::endl;
+		std::cout << queue.dequeue() << std::endl;
+		std::cout << queue.dequeue() << std::endl;
+		std::cout << queue.dequeue() << std::endl;
 
 		queue.display();
 	} catch (std::exception& e) {
