@@ -1,57 +1,21 @@
 #include "Tree.hpp"
 #include <stack>
 
-void preorder_i1(std::unique_ptr<BinaryTreeNode<int>>& node)
-{
-	std::stack<BinaryTreeNode<int>*> left;
-	std::stack<BinaryTreeNode<int>*> right;
-	std::cout << node -> c_ << ' ';
-	if (node -> left_)
-		left.push(node -> left_.get());
-	if (node -> right_)
-		right.push(node -> right_.get());
-	while (!left.empty() && !right.empty()) {
-		if (!left.empty()) {
-			std::cout << "DDDD" << std::endl;
-			std::unique_ptr<BinaryTreeNode<int>> n(left.top());
-			std::cout << "XXXXX" << std::endl;
-			std::cout << n -> c_ << ' ';
-			left.pop();
-			if (n -> left_) 
-				left.push(n -> left_.get());
-			if (n -> right_)
-				right.push(n -> right_.get());
-			std::cout << "YYYYY" << std::endl;
-		} else if (! right.empty()) {
-			std::cout << "zzzzzz" << std::endl;
-			std::unique_ptr<BinaryTreeNode<int>> n(right.top());
-			std::cout << n -> c_ << ' ';
-			right.pop();
-			if (n -> left_) 
-				left.push(n -> left_.get());
-			if (n -> right_)
-				right.push(n -> right_.get());
-		}
-	}
-}
-
-void preorder_i2(std::unique_ptr<BinaryTreeNode<int>>& node)
+void preorder_i(std::unique_ptr<BinaryTreeNode<int>>& node)
 {
 	std::stack<BinaryTreeNode<int>*> stack;
-	std::cout << node -> c_ << ' ';
-	
-	if (node -> right_) 
-		stack.push(node -> right_.get());
-	if (node -> left_)
-		stack.push(node -> left_.get());
+	auto cur = node.get();
+	stack.push(cur);
 	while (!stack.empty()) {
-		std::unique_ptr<BinaryTreeNode<int>> n(stack.top());
-		std::cout << n -> c_ << ' ';
-		
-		if (node -> right_) 
-			stack.push(n -> right_.get());
-		if (n -> left_)
-			stack.push(n -> left_.get());
+		cur = stack.top();
+		stack.pop();
+		std::cout << cur -> c_ << ' ';
+		auto cur1 = cur -> right_.get();
+		if (cur1) 
+			stack.push(cur1);
+		auto cur2 = cur -> left_.get();
+		if (cur2) 
+			stack.push(cur2);
 	}
 }
 
@@ -68,7 +32,6 @@ int main()
 	build();
 	preorder_r(root);
 	std::cout << std::endl;
-	std::cout << "-----" << std::endl;
-	preorder_i1(root);
+	preorder_i(root);
 	std::cout << std::endl;
 }
