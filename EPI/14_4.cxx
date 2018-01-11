@@ -37,7 +37,6 @@ void build()
 	f -> data2 = 'f';
 	std::unique_ptr<BSTNode<int, char>> g = std::make_unique<BSTNode<int, char>>();
 	g -> data1 = 17;
-	//g -> data1 = 20;
 	g -> data2 = 'g';
 	std::unique_ptr<BSTNode<int, char>> h = std::make_unique<BSTNode<int, char>>();
 	h -> data1 = 13;
@@ -114,45 +113,32 @@ void print_inorder(std::unique_ptr<BSTNode<int, char>>& n)
 	}
 }
 
-bool isBinaryTreeBST(const std::unique_ptr<BSTNode<int, char>>& n, int min, int max)
+void LCA(const std::unique_ptr<BSTNode<int, char>>& node, const std::unique_ptr<BSTNode<int, char>>& a, const std::unique_ptr<BSTNode<int, char>>& b)
 {
-	if (!n )
-		return true;
-
-	if (n -> data1 < min || n -> data1 > max)
-		return false;
-	return isBinaryTreeBST(n -> left, min, n->data1) && isBinaryTreeBST(n -> right, n -> data1, max);
-}
-
-bool isBinaryTreeBSTIter(const std::unique_ptr<BSTNode<int, char>>& n, int min, int max)
-{
-	struct Item {
-		BSTNode<int, char>* n;
-		int min;
-		int max;
-	};
-	Item item = {n.get(), min, max};
-	std::queue<Item> queue;
-	queue.push(item);
-	while (!queue.empty()) {
-		auto f = queue.front();
-		std::cout << f.n -> data2 << std::endl;
-		queue.pop();
-		if (f.n -> data1 < f.min || f.n -> data1 > f.max) {
-			return false;
-		}
-		if (f.n -> left) 
-			queue.push({f.n->left.get(), f.min, f.n->data1});
-
-		if (f.n -> right) 
-			queue.push({f.n->right.get(), f.n->data1, f.max});
+	if (node->data1 == a->data1 || node->data1 == b->data1) {
+		std::cout << "(" << node->data1 << ", " << node->data2 << ")" << std::endl;
+		return ;
 	}
-	return true;
+	if (node->data1 > a->data1 && node->data1 < b->data1 && a->data1 < b->data1) {
+		std::cout << "(" << node->data1 << ", " << node->data2 << ")" << std::endl;
+		return ;
+	}
+	if (node->data1 > b->data1 && node->data1 < a->data1 && b->data1 < a->data1) {
+		std::cout << "(" << node->data1 << ", " << node->data2 << ")" << std::endl;
+		return ;
+	}
+
+	if (a->data1 < node->data1 && b->data1 < node->data1 && node->left)
+		return LCA(node->left, a, b);
+
+	if (a->data1 > node->data1 && b->data1 > node->data1 && node->right)
+		return LCA(node->right, a, b);
 }
+
 
 int main()
 {
 	build();
 	//print_inorder(root);
-	std::cout << std::boolalpha << isBinaryTreeBSTIter(root, -100000, 100000) << std::endl;
+	LCA(root, root->left->left->left, root);
 }
