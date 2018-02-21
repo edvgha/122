@@ -1,0 +1,23 @@
+unique_ptr always owns what it points to
+to assign a raw pointer won't compile
+---------------------------------------
+std::shared_ptrs are twice the size of a raw pointer
+Memory for the reference count must be dynamically allocated
+Increments and decrements of the reference count must be atomic
++++++++++++++++++++++++++++++++++++++++
+std::make_shared always creates a control block
+A control block is created when a std::shared_ptr is constructed from a unique-ownership pointer
+Whenastd::shared_ptrconstructoriscalledwitharawpointer,itcreatesa control block
+std::shared_ptr constructors taking std::shared_ptrs or std::weak_ptrs as constructor arguments don’t create new control blocks
+---------------------------------------
+1.1. hash table vs BST
+1.2. thread's race condition
+1.3. past URL to browser process
+2.1. counter with atomic
+2.2. counter with mutex
+2.3. read-write with mutex & cv
+3.1. smaprt-pointers
+3.2. impl shared_ptr
+4.1. string class (assignment operator)
+5.1. merge sorted lists
+---------------------------------------

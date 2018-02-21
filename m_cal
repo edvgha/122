@@ -1,0 +1,77 @@
+vec(A) * vec(b) = abs(A)* abs(b) * cos(alpha) = a1*b1 + a2*b2 + ... + an*bn
+
+                | a1 a2 a3 |
+det (A, B, C) = | b1 b2 b3 | 
+                | c1 c2 c3 |
+
+Geometricly :
+det (A, B, C) = [+|-] value of parallelepiped => another formaula for value of parallelepiped: A * (BxC) => det (A, B, C) = A * (BxC)
+
+Cross - product
+
+        _   _   _
+      | i , j,  k  |
+AxB = | a1, a2, a3 | {i, j, k is unit vectors => AxB is vector not a number like det(A, B, C)}
+      | b1, b2, b3 |
+
+|A x B| -> area of parallelogram of A and B
+dir(A x B) -> perpendicular to the plane of parallelogram { right hand rule for perpendicular direction }
+
+Equation:
+AxB == -BxA
+AxA == 0
+
+Equation1 of plane with 3 points (p1, p2, p3) => for each p on plance should be det(p1p, p1p2, p1p3) == 0 (see line 8)
+Equation2 of plane with 3 points <=> p1p perpendicular of N (normal vector) => p1p * N == 0 ( line 1) => we need N => N == p1p2 x p1p3
+
+A^-1 == 1/det(A) * adj(A)
+adj(A) = ?
+
+step_1
+MINORS - remove column and row & compute determinant for (i, j)
+
+step_2
+COFACTORS - flip sign in checkboard
+
+step_3
+transpose
+
+(step_1 + step_2 + step_3) == adj(A)
+
+--------------------------------------------------------------------------------------------------------------------
+plane ax + by + cz = d
+
+A is invertable <=> det(A) != 0
+
+HOMOGENEOUS SYSTEM : Ax = 0
+
+A (3x3)
+det(A) = 0 => det(N1, N2, N3) = 0 => lay on same plane (coplanar)
+
+Normal vector [ortogonal to N1, N2, N3] of (N1, N2, N3) will be line (which is intersaction of eq1, eq2, eq3)
+
+line - intersaction of two planes
+
+parameteric equation of lines:
+
+Q(t) when Q(0) = Q0 and Q(1) = Q1
+
+_____        ____
+Q0Q(t) = t * Q0Q1
+                ____
+Q(t) = Q0 + t * Q0Q1
+
+--------------------------------------------------------------------------------------------------------------------
+A^-1 exists <=> det(A) != 0
+det(A) != 0 => Ax=b has unique solution x = A^-1b
+det(A) != 0 => Ax=0 has only trivial solution x = 0
+det(A) == 0 => Ax=0 has non-trivial solution
+det(A) == 0 => Ax=b usually has no solution, but has solution for some b
+--------------------------------------------------------------------------------------------------------------------
+parameteric equation r = r(t)
+                _
+velocity vector v = dr/dt
+                    _
+accelaration vector a = dv/dt
+     _
+T^ = v / |v|
