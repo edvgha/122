@@ -3,9 +3,9 @@
 #include <unordered_map>
 #include <algorithm>
 
-std::vector<std::vector<char>> task(const std::vector<char>& arr)
+std::vector<int> task(const std::vector<char>& arr)
 {
-    std::vector<std::vector<char>> r;
+    std::vector<int> r;
     std::unordered_map<char, std::pair<int, int>> table;
     size_t n = arr.size();
     for (size_t i = 0; i < n; ++i) {
@@ -31,7 +31,7 @@ std::vector<std::vector<char>> task(const std::vector<char>& arr)
     size_t j = 0;
     while (i < n) {
         if (range[j].second < range[i].first) {
-            r.emplace_back(arr.begin() + range[j].first, arr.begin() + range[j].second + 1);
+            r.emplace_back(range[j].second - range[j].first + 1);
             j = i++;
         } else {
             if (range[j].second > range[i].second) {
@@ -43,7 +43,7 @@ std::vector<std::vector<char>> task(const std::vector<char>& arr)
             } 
         }
     }
-    r.emplace_back(arr.begin() + range[j].first, arr.begin() + range[j].second + 1);
+    r.emplace_back(range[j].second - range[j].first + 1);
 
     return r;
 }
@@ -52,11 +52,8 @@ int main()
 {
     //auto r = task({'a', 'b', 'c', 'd', 'e', 'a', 'a', 'b', 'l', 'k', 'k', 'x'});
     //auto r = task({'a', 'b', 'c', 'd', 'e', 'f', 'j', 'k', 'l', 'm', 'n', 'o'});
-    auto r = task({'a', 'a', 'c', 'd', 'e', 'd', 'j', 'k', 'o', 'o', 'o', 'o'});
+    auto r = task({'a', 'b', 'c', 'd', 'a', 'e', 'f', 'g', 'h', 'i', 'j', 'e'});
     for (auto el : r) {
-        for (auto e : el) {
-            std::cout << e << ' ';
-        }
-        std::cout << std::endl;
+        std::cout << el << std::endl;
     }
 }

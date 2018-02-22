@@ -75,3 +75,47 @@ velocity vector v = dr/dt
 accelaration vector a = dv/dt
      _
 T^ = v / |v|
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Partial derivatives
+
+Single variable derivative formula
+-----------------------------------
+f'(x) = df/dx = lim (f(x + x') - f(x)) / x' [x' -> 0] - single variable
+approximation formula f(x) ~ f(x0) + f'(x0)(x - x0)
+
+d'f/d'x (x0, y0) = lim (f(x0 + x', y0) - f(x0, y0))/x' [x' -> 0] -> partial derivative by x (same with y)
+approximation formaula 
+x-> x' + x
+y-> y' + y
+z = f(x, y) z' = f'x * x' + f'y * y'
+f'x tangent + f'y tangent = tangent plane
+
+z = z0 + a(x - x0) + b(y - y0) - tangent plane
+a = f'x(x0, y0)
+b = f'y(x0, y0)
+
+MAX and MIN (critical point)
+
+* At local min or max both f'x = 0 and f'y = 0 <=> tangent plane for z = f(x, y) is horizontal;
+
+App
+
+LIST SQUARES INTERPOLATION
+
+(x1, y1) ... (xN, yN) find line to approximate y = ax + b
+minimizing total square deviation
+deviation = yi - (axi + b)
+
+MINIMIZE Dev(a, b) = sum (yi - (axi + b))^2 for all i
+
+Solve: find critical point => D'a = 0 and D'b = 0;
+
+D'a = sum(2 * (yi - (axi + b)) * (-xi)) = 0
+D'b = sum(2 * (yi - (axi + b)) * (-1)) = 0
+and solve system 
+
+IN GENERAL FOR EXPONENTIAL FIT
+
+y = c * e^ax
+
