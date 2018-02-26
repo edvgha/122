@@ -119,3 +119,103 @@ IN GENERAL FOR EXPONENTIAL FIT
 
 y = c * e^ax
 
+Second derivation test
+
+(x0, y0) is critical point for f
+
+than compute A = f'xx(x0, y0) B = f'xy(x0, y0) C = f'yy(x0, y0)
+
+if AC - B^2 > 0 A > 0 local minimum
+if AC - B^2 > 0 A < 0 local maximum
+if AC - B^2 < 0 saddle point
+if AC - B^2 == 0 we don't know
+
+Quadratic approximation
+
+delta_f = f'x(x - x0) + f'y(y - y0) + 0.5f'xx(x - x0)^2 + f'xy(x - x0)(y - y0) + 0.5f'yy(y - y0)^2
+
+Differentials
+
+df/dt = f'(x) when f = f(x)
+
+total differential : f(x, y, z)
+
+df = f'xdx + f'ydy + f'zdz
+
+DIFFERENTIALS IS NOT SAME delta_f
+
+can do with differentials:
+[1] how x, y, z, changes affect f
+[2] PH for delta_x, delta_y, delta_z to get approximation formula
+[3] divide by dt to get rate of change
+
+x = x(t) y = y(t) z = z(t)
+
+df/dt = f'x dx/dt + f'y dy/dt + f'z dz/dt - CHAIN RULL
+
+chain rull with more variable
+
+w = f(x, y) x = x(u, v) y = y(u, v) z = z(u, v)
+
+∂f/∂u = ∂f/∂x * ∂x/∂u + ∂f/∂y * ∂y/∂u
+∂f/∂v = ∂f/∂x * ∂x/∂v + ∂f/∂y * ∂y/∂v
+
+EX: f = f(x, y) x = rcosm y = rsinm
+
+∂f/∂r = ∂f/∂x * ∂x/∂r + ∂f/∂y * ∂y/∂r = f'x * cosm + f'y * sinm
+
+df/dt = f'x dx/dt + f'y dy/dt + f'z dz/dt => df/dt = grad_f * dr/dt
+grad_f = <f'x, f'y, f'z> 
+dr/dt = <dx/dt, dy/dt, dz/dt>
+
+T1:
+grad_w is perpendicular level surface { w = constant }
+
+Directional derivatives
+
+dw/ds = grad_w * dr/ds = grad_w * u^
+
+dw/ds | u^ = grad_w * u^ = |grad_w| * |u^| * cos(t) = |grad_w| * cos(t) because u^ is unit vector
+=> largest than cos(t) = 1; => t = 0 => u = dir(grad)
+
+=> DIRECTION OF GRAD W IS DIRECTION OF FASTEST INCREASE OF W FOR GIVEN POINT
+
+|GRAD W| = dw/ds | u^ = dir(grad_w)
+
+=> fastest dicrease is cos(t) = -1 => t = 180 => u = - dir(grad)
+
+=> no changes cos(t) = 0 => t = 90 => u^ perpendicular to grad_w
+
+LAGRANGE MULTIPLIERS min/max f(x, y, z) with constraint (g(x, y, z) = c
+grad_f * grad_g = 0
+
+|-> if we looking min/max of f on g => df/ds|u^ (u^ on g(x, y, z) = c) = 0; => grad_f * u^ = 0; 
+    but grad_g * u^ = 0; => grad_f = Lambda_l * grad_g <-|
+
+-----------------------------------------------------------------------------------------------
+
+non independent variables
+
+g(x, y, z) = c ∂x/∂z - ? ∂x/∂y - ?
+
+dg = g'xdx + g'y dy + g'zdz = 0 because c is constant
+
+∂z/∂x = - g'x / g'z, y = constant
+
+(∂f/∂x)y - keep y constant
+
+------------- TOPIC -------------
+
+- contor plot
+- f'x = ∂f/∂x
+- ∇f = <f'x, f'y, f'z>
+  tangent plane approximation Δf ~ f'x Δx + f'y Δy + f'z Δz = ∇f*Δr
+  tangent plane to level surface: noraml vector = ∇f
+
+- Non independent variables : g(x, y, z) = c
+    -> min/max lagrange multiplayer
+       f -> min/max && g(x, y, z) = c
+       ∇f = λ*∇g
+
+    -> constraint partial derivation
+        (∂f/∂z)y = f'x(-g'z/g'x) + f'z 
