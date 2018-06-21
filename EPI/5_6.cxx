@@ -1,44 +1,24 @@
 #include <iostream>
 #include <vector>
+#include <limits>
 
-std::pair<int, int> max_profit(std::vector<int>& arr)
+std::pair<int, int> max_profit1(std::vector<int>& arr)
 {
-    size_t i = 0; 
-    int max = -1;
-    int min = -1;
-    int f_max = -1;
-    int f_min = -1;
-    while (i < arr.size())
+    int min_so_far = std::numeric_limits<int>::max();
+    int max_profit = 0;
+    for (size_t i = 0; i < arr.size(); ++i)
     {
-        if ((i == 0 || arr[i - 1] > arr[i]) && (i + 1 == arr.size() || arr[i + 1] > arr[i]))
-        {
-            min = arr[i];
-            while (i < arr.size())
-            {
-                if ((i == 0 || arr[i - 1] < arr[i]) && (i + 1 == arr.size() || arr[i + 1] < arr[i]))
-                {
-                    max = arr[i];
-                    if (max - min > f_max - f_min)
-                    {
-                        f_max = max;
-                        f_min = min;
-                        max = 0;
-                        min = 0;
-                        break;
-                    }
-                } 
-                ++i;
-            }
-        }
-        ++i;
+        int profit = arr[i] - min_so_far;
+        max_profit = std::max(max_profit, profit);
+        min_so_far = std::min(arr[i], min_so_far);
     }
-    return {f_min, f_max};
+    return {min_so_far, max_profit};
 }
 
 int main()
 {
-    //std::vector<int> arr = {310, 315, 275, 295, 260, 270, 290, 230, 255, 250};
-    std::vector<int> arr = {11, 12, 13, 0, 100, 99, 98, 99};
-    auto [min, max] = max_profit(arr);
+    std::vector<int> arr = {310, 315, 275, 295, 260, 270, 290, 230, 255, 250};
+    //std::vector<int> arr = {10, 50, 5, 40, 20, 60, 0};
+    auto [min, max] = max_profit1(arr);
     std::cout << "[" << min << ", " << max << "]" << std::endl;
 }
