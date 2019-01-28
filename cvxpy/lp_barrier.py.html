@@ -1,0 +1,87 @@
+<html><head>
+<title>lp_barrier.py</title>
+<meta name="Generator" content="htmlizer/[Twisted, version 18.9.0]" />
+<link rel="alternate" href="lp_barrier.py" type="text/x-python" />
+
+</head>
+<body>
+<pre><span class="py-src-variable">import</span> <span class="py-src-variable">cvxpy</span> <span class="py-src-variable">as</span> <span class="py-src-variable">cvx</span>
+<span class="py-src-variable">import</span> <span class="py-src-variable">numpy</span> <span class="py-src-variable">as</span> <span class="py-src-variable">np</span>
+<span class="py-src-variable">import</span> <span class="py-src-variable">matplotlib</span>.<span class="py-src-variable">pyplot</span> <span class="py-src-variable">as</span> <span class="py-src-variable">plt</span>
+
+<span class="py-src-variable">n</span> = <span class="py-src-number">500</span>
+<span class="py-src-variable">m</span> = <span class="py-src-number">100</span>
+
+<span class="py-src-variable">np</span>.<span class="py-src-variable">random</span>.<span class="py-src-variable">seed</span>(<span class="py-src-number">1</span>)
+<span class="py-src-variable">A</span> = <span class="py-src-variable">np</span>.<span class="py-src-variable">random</span>.<span class="py-src-variable">randn</span>(<span class="py-src-variable">m</span>, <span class="py-src-variable">n</span>)
+<span class="py-src-variable">x_0</span> = <span class="py-src-variable">np</span>.<span class="py-src-variable">random</span>.<span class="py-src-variable">uniform</span>(<span class="py-src-number">0.1</span>, <span class="py-src-number">0.9</span>, <span class="py-src-variable">n</span>)
+<span class="py-src-comment">#use b as A * x_0 to make x_0 feasible</span>
+<span class="py-src-variable">b</span> = <span class="py-src-variable">A</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">x_0</span>)
+<span class="py-src-variable">c</span> = <span class="py-src-variable">np</span>.<span class="py-src-variable">random</span>.<span class="py-src-variable">uniform</span>(<span class="py-src-number">0</span>, <span class="py-src-number">1</span>, <span class="py-src-variable">n</span>)
+
+<span class="py-src-variable">assert</span> <span class="py-src-variable">np</span>.<span class="py-src-variable">linalg</span>.<span class="py-src-variable">matrix_rank</span>(<span class="py-src-variable">A</span>) == <span class="py-src-variable">m</span>
+<span class="py-src-variable">assert</span> <span class="py-src-variable">min</span>(<span class="py-src-variable">x_0</span>) &gt; <span class="py-src-number">0</span>
+<span class="py-src-variable">assert</span> <span class="py-src-variable">cvx</span>.<span class="py-src-variable">norm</span>(<span class="py-src-variable">A</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">x_0</span>) - <span class="py-src-variable">b</span>).<span class="py-src-variable">value</span> &lt;= <span class="py-src-number">1e-3</span>
+
+<span class="py-src-variable">alpha</span> = <span class="py-src-variable">cvx</span>.<span class="py-src-variable">Parameter</span>(<span class="py-src-variable">value</span> = <span class="py-src-number">0.01</span>)
+<span class="py-src-variable">beta</span> = <span class="py-src-variable">cvx</span>.<span class="py-src-variable">Parameter</span>(<span class="py-src-variable">value</span> = <span class="py-src-number">0.5</span>)
+<span class="py-src-variable">tol</span> = <span class="py-src-variable">cvx</span>.<span class="py-src-variable">Parameter</span>(<span class="py-src-variable">value</span>=<span class="py-src-number">1e-6</span>)
+<span class="py-src-variable">vals</span> = []
+<span class="py-src-variable">steps</span> = []
+
+<span class="py-src-variable">x</span> = <span class="py-src-variable">x_0</span>
+<span class="py-src-variable">while</span> <span class="py-src-variable">True</span>:
+    <span class="py-src-comment">#evalue grad</span>
+    <span class="py-src-variable">g</span> = <span class="py-src-variable">c</span> - <span class="py-src-number">1.0</span>/<span class="py-src-variable">x</span>
+    <span class="py-src-comment">#evalue hessian</span>
+    <span class="py-src-variable">h</span> = <span class="py-src-variable">cvx</span>.<span class="py-src-variable">diag</span>(<span class="py-src-number">1.0</span>/(<span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">x</span>,<span class="py-src-variable">x</span>))).<span class="py-src-variable">value</span>
+    <span class="py-src-variable">h_inv</span> = <span class="py-src-variable">cvx</span>.<span class="py-src-variable">diag</span>(<span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">x</span>,<span class="py-src-variable">x</span>)).<span class="py-src-variable">value</span>
+    <span class="py-src-comment"># Newton step via whole KKT system</span>
+    <span class="py-src-comment"># M = [H A.T, A zeros(m,m)]</span>
+    <span class="py-src-comment"># d = solve (M, [-g; zeros(m,1)]</span>
+    <span class="py-src-comment"># dx = d[1:n]</span>
+    <span class="py-src-comment"># w = d[n + 1: n + m]</span>
+    <span class="py-src-comment"># fine Newton step by elimination method</span>
+    <span class="py-src-variable">w</span> = <span class="py-src-variable">np</span>.<span class="py-src-variable">linalg</span>.<span class="py-src-variable">solve</span>(<span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">A</span>, <span class="py-src-variable">h_inv</span>), <span class="py-src-variable">A</span>.<span class="py-src-variable">T</span>), <span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(-<span class="py-src-variable">A</span>, <span class="py-src-variable">h_inv</span>), <span class="py-src-variable">g</span>))
+    <span class="py-src-variable">dx</span> = <span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(-<span class="py-src-variable">h_inv</span>, (<span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">A</span>.<span class="py-src-variable">T</span>, <span class="py-src-variable">w</span>) + <span class="py-src-variable">g</span>))
+    <span class="py-src-variable">break</span>
+    <span class="py-src-comment">#evalue lambda^2</span>
+    <span class="py-src-variable">fprime</span> = <span class="py-src-variable">np</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">grad</span>.<span class="py-src-variable">T</span>, <span class="py-src-variable">v</span>)
+    <span class="py-src-comment">#check for exit</span>
+    <span class="py-src-variable">if</span> <span class="py-src-variable">abs</span>(<span class="py-src-variable">fprime</span>) / <span class="py-src-number">2</span> &lt;= <span class="py-src-variable">tol</span>.<span class="py-src-variable">value</span>:
+        <span class="py-src-variable">break</span>
+    <span class="py-src-comment">#mulitple until x + t * del_x belongs to dom f</span>
+    <span class="py-src-variable">t</span> = <span class="py-src-number">1</span>
+    <span class="py-src-variable">while</span> <span class="py-src-variable">max</span>(<span class="py-src-variable">A</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">x</span> + <span class="py-src-variable">t</span> * <span class="py-src-variable">v</span>)) &gt;= <span class="py-src-number">1</span> <span class="py-src-variable">or</span> <span class="py-src-variable">max</span>(<span class="py-src-variable">abs</span>(<span class="py-src-variable">x</span> + <span class="py-src-variable">t</span> * <span class="py-src-variable">v</span>)) &gt;= <span class="py-src-number">1</span>:
+        <span class="py-src-variable">t</span> = <span class="py-src-variable">beta</span>.<span class="py-src-variable">value</span> * <span class="py-src-variable">t</span>
+    <span class="py-src-comment"># compute t based on backtracking line search</span>
+    <span class="py-src-variable">while</span> (-<span class="py-src-variable">cvx</span>.<span class="py-src-variable">sum</span>(<span class="py-src-variable">cvx</span>.<span class="py-src-variable">log</span>(<span class="py-src-number">1</span> - <span class="py-src-variable">A</span>.<span class="py-src-variable">dot</span>(<span class="py-src-variable">x</span> + <span class="py-src-variable">t</span> * <span class="py-src-variable">v</span>))) - <span class="py-src-variable">cvx</span>.<span class="py-src-variable">sum</span>(<span class="py-src-variable">cvx</span>.<span class="py-src-variable">log</span>(<span class="py-src-number">1</span> + (<span class="py-src-variable">x</span> + <span class="py-src-variable">t</span> * <span class="py-src-variable">v</span>))) - <span class="py-src-variable">cvx</span>.<span class="py-src-variable">sum</span>(<span class="py-src-variable">cvx</span>.<span class="py-src-variable">log</span>(<span class="py-src-number">1</span> - (<span class="py-src-variable">x</span> + <span class="py-src-variable">t</span> * <span class="py-src-variable">v</span>)))).<span class="py-src-variable">value</span> &gt; <span class="py-src-variable">val</span>.<span class="py-src-variable">value</span> + <span class="py-src-variable">alpha</span>.<span class="py-src-variable">value</span> *  <span class="py-src-variable">t</span> * <span class="py-src-variable">fprime</span>:
+        <span class="py-src-variable">t</span> = <span class="py-src-variable">beta</span>.<span class="py-src-variable">value</span> * <span class="py-src-variable">t</span>
+    <span class="py-src-variable">x</span> = <span class="py-src-variable">x</span> + <span class="py-src-variable">t</span> * <span class="py-src-variable">v</span>
+    <span class="py-src-variable">steps</span>.<span class="py-src-variable">append</span>(<span class="py-src-variable">t</span>)
+
+<span class="py-src-comment">#Plot process</span>
+<span class="py-src-comment">#----------------------------------------#</span>
+<span class="py-src-comment">#fig,axes = plt.subplots(nrows = 1, ncols = 3)</span>
+<span class="py-src-comment">#axes[0].plot(list(range(len(vals))), vals, &#x27;r--&#x27;)</span>
+<span class="py-src-comment">#axes[0].set_xlabel(&#x27;iter&#x27;)</span>
+<span class="py-src-comment">#axes[0].set_ylabel(&#x27;fvalue&#x27;)</span>
+<span class="py-src-comment">#axes[0].set_title(&#x27;descent&#x27;)</span>
+<span class="py-src-comment">#----------------------------------------#</span>
+<span class="py-src-comment">#axes[1].plot(list(range(len(steps))), steps, &#x27;g*-&#x27;)</span>
+<span class="py-src-comment">#axes[1].set_xlabel(&#x27;iter&#x27;)</span>
+<span class="py-src-comment">#axes[1].set_ylabel(&#x27;step&#x27;)</span>
+<span class="py-src-comment">#axes[1].set_title(&#x27;BLS&#x27;)</span>
+<span class="py-src-comment">#----------------------------------------#</span>
+<span class="py-src-comment">#l = vals[len(vals) - 1]</span>
+<span class="py-src-comment">#relative = list(map(lambda e: e - l, vals))</span>
+<span class="py-src-comment">#axes[2].plot(list(range(len(relative))), relative, &#x27;b+-&#x27;)</span>
+<span class="py-src-comment">#axes[2].set_xlabel(&#x27;iter&#x27;)</span>
+<span class="py-src-comment">#axes[2].set_ylabel(&#x27;f(x) - p&#x27;)</span>
+<span class="py-src-comment">#axes[2].set_title(&#x27;Newton descent&#x27;)</span>
+<span class="py-src-comment">#----------------------------------------#</span>
+<span class="py-src-comment">#fig.tight_layout()</span>
+<span class="py-src-comment">#plt.show()</span>
+<span class="py-src-comment">#----------------------------------------#</span>
+</pre>
+</body>
