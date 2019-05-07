@@ -123,8 +123,18 @@ class L2NormPenaltyNode(object):
         self.d_out = None
         self.l2_reg = np.array(l2_reg)
         self.w = w
-        
-        ## TODO
+
+    def forward(self):
+        self.out = self.l2_reg * np.dot(self.w.out, self.w.out)
+        self.d_out = np.zeros(self.out.shape)
+        return self.out
+
+    def backward(self):
+        self.w.d_out += 2 * self.l2_reg * self.w.out * self.d_out
+        return self.d_out
+
+    def get_predecessors(self):
+        return [self.w]
 
 class SumNode(object):
     """ Node computing a + b, for numpy arrays a and b"""
@@ -135,7 +145,24 @@ class SumNode(object):
         b: node for which b.out is a numpy array of the same shape as a
         node_name: node's name (a string)
         """
-        ## TODO
+        self.node_name = node_name
+        self.a = a
+        self.b = b
+        self.out = None
+        self.d_out = None
+
+    def forward(self):
+        self.out = self.a.out + self.b.out
+        self.d_out = np.zeros(self.out.shape)
+        return self.out
+
+    def backward(self):
+        self.a.d_out += self.d_out
+        self.b.d_out += self.d_out
+        return self.d_out
+
+    def get_predecessors(self):
+        return [self.a, self.b]
 
 class AffineNode(object):
     """Node implementing affine transformation (W,x,b)-->Wx+b, where W is a matrix,

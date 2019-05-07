@@ -16,10 +16,24 @@ class RidgeRegression(BaseEstimator, RegressorMixin):
         self.y = nodes.ValueNode(node_name="y") # to hold a scalar response
         self.w = nodes.ValueNode(node_name="w") # to hold the parameter vector
         self.b = nodes.ValueNode(node_name="b") # to hold the bias parameter (scalar)
-        self.prediction = nodes.VectorScalarAffineNode(x=self.x, w=self.w, b=self.b,
-                                                 node_name="prediction")
-        # TODO
 
+        self.prediction = nodes.VectorScalarAffineNode(x=self.x, w=self.w, b=self.b,
+                node_name="prediction")
+
+        self.sqrloss = nodes.SquaredL2DistanceNode(a=self.prediction, b=self.y,
+                node_name="square loss")
+
+        self.l2normpenalty = nodes.L2NormPenaltyNode(l2_reg=l2_reg, w = self.w, node_name = "regularizer")
+
+        self.objective = nodes.SumNode(a=self.l2normpenalty, b=self.sqrloss, node_name = "ridge")
+
+        self.inputs = [self.x]
+        self.outcomes = [self.y]
+        self.parameters = [self.w, self.b]
+
+        self.graph = graph.ComputationGraphFunction(self.inputs, self.outcomes,
+                self.parameters, self.prediction,
+                self.objective)
 
     def fit(self, X, y):
         num_instances, num_ftrs = X.shape
