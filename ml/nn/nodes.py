@@ -103,7 +103,7 @@ class SquaredL2DistanceNode(object):
         d_a = self.d_out * 2 * self.a_minus_b
         d_b = -self.d_out * 2 * self.a_minus_b
         self.a.d_out += d_a
-        self.b.d_out += d_b
+        self.b.d_out += d_b.reshape(self.b.d_out.shape)
         return self.d_out
 
     def get_predecessors(self):
@@ -172,12 +172,69 @@ class AffineNode(object):
         x: node for which x.out is a numpy array of shape (d)
         b: node for which b.out is a numpy array of shape (m) (i.e. vector of length m)
     """
-    ## TODO
+    def __init__(self, x, W, b, node_name):
+        """ 
+        Parameters:
+        x: node for which x.out is a 1D numpy array
+        w: node for which W.out is a 2D numpy array
+        b: node for which b.out is a 1D numpy array
+        node_name: node's name (a string)
+        """
+        self.node_name = node_name
+        self.out = None
+        self.d_out = None
+        self.x = x
+        self.W = W
+        self.b = b
+
+    def forward(self):
+        self.out = np.dot(self.W.out, self.x.out) + self.b.out
+        self.d_out = np.zeros(self.out.shape)
+        return self.out
+
+    def backward(self):
+        # W.T -> dxm 
+        # d_out -> mx1
+        # d_x -> dx1
+        d_x = np.dot(self.W.out.T, self.d_out)
+        # d_out -> mx1
+        # x.out.T -> 1xd
+        #d_W = np.dot(np.array([self.d_out]), np.array([self.x.out]))
+        d_W = np.dot(np.array([self.d_out]).T, np.array([self.x.out]))
+        # d_out -> mx1
+        # d_b = -> mx1
+        d_b = self.d_out
+        self.x.d_out += d_x
+        self.W.d_out += d_W
+        self.b.d_out += d_b
+
+    def get_predecessors(self):
+        return [self.x, self.W, self.b]
 
 class TanhNode(object):
     """Node tanh(a), where tanh is applied elementwise to the array a
         Parameters:
         a: node for which a.out is a numpy array
     """
-    ## TODO
+    def __init__(self, a, node_name):
+        """
+        Parameters:
+        x: node for which x.out is a  1D array
+        node_name: node's name (a string)
+        """
+        self.node_name = node_name
+        self.out = None
+        self.d_out = None
+        self.a = a
+
+    def forward(self):
+        self.out = np.tanh(self.a.out)
+        self.d_out = np.zeros(self.out.shape)
+        return self.out
+
+    def backward(self):
+        self.a.d_out += self.d_out * (1 - (self.out * self.out))
+
+    def get_predecessors(self):
+        return [self.a]
 

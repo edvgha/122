@@ -18,17 +18,49 @@ class MLPRegression(BaseEstimator, RegressorMixin):
         self.step_size = step_size
 
         # Build computation graph
+
+        #Data
         self.x = nodes.ValueNode(node_name="x") # to hold a vector input
         self.y = nodes.ValueNode(node_name="y") # to hold a scalar response
-        ## TODO
+
+        #Parameters
+        self.W1 = nodes.ValueNode(node_name="W1")
+        self.b1 = nodes.ValueNode(node_name="b1")
+        self.W2 = nodes.ValueNode(node_name="W2")
+        self.b2 = nodes.ValueNode(node_name="b2")
+
+        #Hiddel layers
+        self.AffineHiddenLayer = nodes.AffineNode(x=self.x, W=self.W1, b=self.b1, node_name="AffineHiddenLayer")
+        self.Tanh = nodes.TanhNode(a=self.AffineHiddenLayer, node_name="TanhHiddenLayer")
+
+        #Prediction
+        self.prediction = nodes.AffineNode(x=self.Tanh, W=self.W2, b=self.b2, node_name="Prediction")
+
+        #Objective
+        self.objective = nodes.SquaredL2DistanceNode(a=self.prediction, b=self.y, node_name="SquareLoss")
+
+        # Group nodes into types to construct computation graph function
+        self.inputs = [self.x]
+        self.outcomes = [self.y]
+        self.parameters = [self.W1, self.b1, self.W2, self.b2]
+
+        self.graph = graph.ComputationGraphFunction(self.inputs, self.outcomes,
+                                                    self.parameters, self.prediction,
+                                                    self.objective)
 
     def fit(self, X, y):
         num_instances, num_ftrs = X.shape
         y = y.reshape(-1)
 
-        ## TODO: Initialize parameters (small random numbers -- not all 0, to break symmetry )
+        print ("NUM HIDDEN UNITS:", self.num_hidden_units)
+        print ("NUM FEATURES:", num_ftrs)
+
         s = self.init_param_scale
-        init_values = None ## TODO
+        m = self.num_hidden_units
+        d = num_ftrs
+
+        init_values = {"W1": s * np.random.randn(m, d), "b1": s * np.random.randn(m),
+                       "W2": s * np.random.randn(1, m), "b2": np.array(s * np.random.randn(1))}
 
         self.graph.set_parameters(init_values)
 
@@ -38,7 +70,6 @@ class MLPRegression(BaseEstimator, RegressorMixin):
             for j in shuffle:
                 obj, grads = self.graph.get_gradients(input_values = {"x": X[j]},
                                                     outcome_values = {"y": y[j]})
-                #print(obj)
                 epoch_obj_tot += obj
                 # Take step in negative gradient direction
                 steps = {}

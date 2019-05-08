@@ -15,7 +15,7 @@ class TestNodes(unittest.TestCase):
         W = nodes.ValueNode(node_name="W")
         x = nodes.ValueNode(node_name="x")
         b = nodes.ValueNode(node_name="b")
-        affine_node = nodes.AffineNode(W, x, b, "affine")
+        affine_node = nodes.AffineNode(x, W, b, "affine")
         m = 8
         d = 5
         init_vals = {"W":np.random.randn(m,d),
@@ -45,7 +45,7 @@ class TestNodes(unittest.TestCase):
         outcome_vals = {"y": np.array(np.random.randn())}
         parameter_vals = {"W1": np.random.standard_normal((num_hidden_units, num_ftrs)),
                           "b1": np.random.standard_normal((num_hidden_units)),
-                          "w2": np.random.standard_normal((num_hidden_units)),
+                          "W2": np.random.standard_normal((num_hidden_units)),
                           "b2": np.array(np.random.randn()) }
 
         max_rel_err = test_utils.test_ComputationGraphFunction(estimator.graph, input_vals, outcome_vals, parameter_vals)
