@@ -46,7 +46,7 @@ class ValueNode(object):
 class VectorScalarAffineNode(object):
     """ Node computing an affine function mapping a vector to a scalar."""
     def __init__(self, x, w, b, node_name):
-        """ 
+        """
         Parameters:
         x: node for which x.out is a 1D numpy array
         w: node for which w.out is a 1D numpy array of same size as x.out
@@ -79,7 +79,7 @@ class VectorScalarAffineNode(object):
 class SquaredL2DistanceNode(object):
     """ Node computing L2 distance (sum of square differences) between 2 arrays."""
     def __init__(self, a, b, node_name):
-        """ 
+        """
         Parameters:
         a: node for which a.out is a numpy array
         b: node for which b.out is a numpy array of same shape as a.out
@@ -112,7 +112,7 @@ class SquaredL2DistanceNode(object):
 class L2NormPenaltyNode(object):
     """ Node computing l2_reg * ||w||^2 for scalars l2_reg and vector w"""
     def __init__(self, l2_reg, w, node_name):
-        """ 
+        """
         Parameters:
         l2_reg: a scalar value >=0 (not a node)
         w: a node for which w.out is a numpy vector
@@ -139,7 +139,7 @@ class L2NormPenaltyNode(object):
 class SumNode(object):
     """ Node computing a + b, for numpy arrays a and b"""
     def __init__(self, a, b, node_name):
-        """ 
+        """
         Parameters:
         a: node for which a.out is a numpy array
         b: node for which b.out is a numpy array of the same shape as a
@@ -173,7 +173,7 @@ class AffineNode(object):
         b: node for which b.out is a numpy array of shape (m) (i.e. vector of length m)
     """
     def __init__(self, x, W, b, node_name):
-        """ 
+        """
         Parameters:
         x: node for which x.out is a 1D numpy array
         w: node for which W.out is a 2D numpy array
@@ -193,7 +193,7 @@ class AffineNode(object):
         return self.out
 
     def backward(self):
-        # W.T -> dxm 
+        # W.T -> dxm
         # d_out -> mx1
         # d_x -> dx1
         d_x = np.dot(self.W.out.T, self.d_out)
@@ -233,6 +233,35 @@ class TanhNode(object):
         return self.out
 
     def backward(self):
+        self.a.d_out += self.d_out * (1 - (self.out * self.out))
+
+    def get_predecessors(self):
+        return [self.a]
+
+class SoftMax(object):
+    """Node softmax(a), where i-th element is exp(a[i])/sum_all_elements(exp(a[j]))
+        Parameters:
+        a: node for which a.out is a numpy array
+    """
+    def __init__(self, a, node_name):
+        """
+        Parameters:
+        a: node for which a.out is a  1D array
+        node_name: node's name (a string)
+        """
+        self.node_name = node_name
+        self.out = None
+        self.d_out = None
+        self.a = a
+
+    def forward(self):
+        self.s = np.sum(np.exp(self.a.out))
+        self.out = np.exp(self.a.out) / self.s
+        self.d_out = np.zeros(self.out.shape)
+        return self.out
+
+    def backward(self):
+        #TODO
         self.a.d_out += self.d_out * (1 - (self.out * self.out))
 
     def get_predecessors(self):
