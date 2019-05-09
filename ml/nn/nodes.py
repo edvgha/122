@@ -261,8 +261,27 @@ class SoftMax(object):
         return self.out
 
     def backward(self):
-        #TODO
-        self.a.d_out += self.d_out * (1 - (self.out * self.out))
+        """
+            |D1S1 ... DNS1|
+            | .        .  |
+        DS =| .        .  |
+            | .        .  |
+            |D1SN ... DNSN|
+
+        DjSi = Si(Delta(i,j) - Sj)
+
+        Si = exp(a[i])/sum(exp(a))
+        """
+
+        m = np.zeros((self.out.shape, self.out.shape))
+        for i in range(0, self.out.shape):
+            for j in range(0, self.out.shape):
+                if i == j:
+                    m[i][j] = (np.exp(a[i])/np.sum(np.exp(a))) * (1 - (np.exp(a[i])/np.sum(np.exp(a))))
+                else:
+                    m[i][j] = -1 * (np.exp(a[i])/np.sum(np.exp(a))) * (np.exp(a[i])/np.sum(np.exp(a)))
+        self.a.d_out += np.dot(self.d_out, m)
+
 
     def get_predecessors(self):
         return [self.a]
