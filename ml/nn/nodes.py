@@ -61,17 +61,20 @@ class VectorScalarAffineNode(object):
         self.b = b
 
     def forward(self):
-        self.out = np.dot(self.x.out, self.w.out) + self.b.out
+        self.out = np.dot(self.w.out, self.x.out) + self.b.out
         self.d_out = np.zeros(self.out.shape)
         return self.out
 
     def backward(self):
-        d_x = self.d_out * self.w.out
-        d_w = self.d_out * self.x.out
+        #d_x = self.d_out * self.w.out
+        d_x = np.dot(self.w.out.T, self.d_out)
+        #d_w = self.d_out * self.x.out
+        d_w = np.outer(self.d_out, self.x.out)
         d_b = self.d_out
         self.x.d_out += d_x
         self.w.d_out += d_w
         self.b.d_out += d_b
+        return self.d_out
 
     def get_predecessors(self):
         return [self.x, self.w, self.b]
@@ -207,6 +210,7 @@ class AffineNode(object):
         self.x.d_out += d_x
         self.W.d_out += d_W
         self.b.d_out += d_b
+        return self.d_out
 
     def get_predecessors(self):
         return [self.x, self.W, self.b]
@@ -234,6 +238,7 @@ class TanhNode(object):
 
     def backward(self):
         self.a.d_out += self.d_out * (1 - (self.out * self.out))
+        return self.d_out
 
     def get_predecessors(self):
         return [self.a]
@@ -273,16 +278,56 @@ class SoftMax(object):
         Si = exp(a[i])/sum(exp(a))
         """
 
-        m = np.zeros((self.out.shape, self.out.shape))
-        for i in range(0, self.out.shape):
-            for j in range(0, self.out.shape):
+        l = self.out.shape[0]
+        m = np.zeros((l, l))
+        for i in range(0, l):
+            for j in range(0, l):
                 if i == j:
-                    m[i][j] = (np.exp(a[i])/np.sum(np.exp(a))) * (1 - (np.exp(a[i])/np.sum(np.exp(a))))
+                    m[i][j] = (np.exp(self.a.out[i])/np.sum(np.exp(self.a.out))) * (1 - (np.exp(self.a.out[i])/np.sum(np.exp(self.a.out))))
                 else:
-                    m[i][j] = -1 * (np.exp(a[i])/np.sum(np.exp(a))) * (np.exp(a[i])/np.sum(np.exp(a)))
+                    m[i][j] = -1 * (np.exp(self.a.out[i])/np.sum(np.exp(self.a.out))) * (np.exp(self.a.out[i])/np.sum(np.exp(self.a.out)))
         self.a.d_out += np.dot(self.d_out, m)
-
+        return self.out
 
     def get_predecessors(self):
         return [self.a]
+
+class NegLogLikelihood(object):
+    """Node NegLogLikelihood(a, y): -log(y-th element of a)
+        Parameters:
+        a: node for which a.out is a numpy array
+        y: node index where y.out belongs to {1, ..., num_categories}
+    """
+    def __init__(self, a, y, node_name):
+        """
+        Parameters:
+        a: node for which a.out is a  1D array
+        y: node index where y.out belongs to {1, ..., num_categories}
+        node_name: node's name (a string)
+        """
+        self.node_name = node_name
+        self.out = None
+        self.d_out = None
+        self.a = a
+        self.y = y
+
+    def forward(self):
+        self.out = (np.log(self.a.out))[self.y.out]
+        self.d_out = np.zeros(self.out.shape)
+        return self.out
+
+    def backward(self):
+        """
+        [0, ... 0, -1/a[y], 0, ... 0]
+        """
+        if self.a.out[self.y.out] == 0:
+            return self.d_out
+
+        z = np.zeros(self.a.d_out.shape)
+        z[self.y.out] = -1 / self.a.out[self.y.out]
+        self.a.d_out += z
+        return self.d_out
+
+    def get_predecessors(self):
+        return [self.a, self.y]
 
