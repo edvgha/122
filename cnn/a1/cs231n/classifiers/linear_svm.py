@@ -67,35 +67,64 @@ def svm_loss_vectorized(W, X, y, reg):
     """
     Structured SVM loss function, vectorized implementation.
 
-    Inputs and outputs are the same as svm_loss_naive.
+    Inputs:
+    - W: A numpy array of shape (D, C) containing weights.
+    - X: A numpy array of shape (N, D) containing a minibatch of data.
+    - y: A numpy array of shape (N,) containing training labels; y[i] = c means
+      that X[i] has label c, where 0 <= c < C.
+    - reg: (float) regularization strength
+
+    Returns a tuple of:
+    - loss as single float
+    - gradient with respect to weights W; an array of same shape as W
     """
     loss = 0.0
     dW = np.zeros(W.shape) # initialize the gradient as zero
 
     #############################################################################
-    # TODO:                                                                     #
     # Implement a vectorized version of the structured SVM loss, storing the    #
     # result in loss.                                                           #
     #############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    N = X.shape[0]
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    M = np.dot(X, W)
+
+    neg_M_y_i = M[np.arange(0, N, 1), y]
+
+    M = np.subtract(M, neg_M_y_i[:, np.newaxis])
+
+    M = np.add(M, np.ones(N)[:, np.newaxis])
+
+    M[np.arange(0, N, 1), y] = 0
+
+    M[M < 0] = 0
+
+    ############################### GRADIENT ##################################
+    M_ones = M.copy()
+
+    M_ones[M_ones > 0] = 1
+
+    M_ones[np.arange(0, N, 1), y] = 0
+
+    M_ones[np.arange(0, N, 1), y] = - np.sum(M_ones, axis = 1)
+    ############################################################################
+
+    loss += np.sum(M)
+
+    loss /= N
+
+    loss += reg * np.sum(W * W)
 
     #############################################################################
-    # TODO:                                                                     #
     # Implement a vectorized version of the gradient for the structured SVM     #
     # loss, storing the result in dW.                                           #
-    #                                                                           #
-    # Hint: Instead of computing the gradient from scratch, it may be easier    #
-    # to reuse some of the intermediate values that you used to compute the     #
-    # loss.                                                                     #
     #############################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    dW = np.dot(X.T, M_ones)
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    dW = dW / float(N)
+
+    dW += 2 * reg * W
 
     return loss, dW
