@@ -74,15 +74,34 @@ class TwoLayerNet(object):
         # Compute the forward pass
         scores = None
         #############################################################################
-        # TODO: Perform the forward pass, computing the class scores for the input. #
+        # Perform the forward pass, computing the class scores for the input.       #
         # Store the result in the scores variable, which should be an array of      #
         # shape (N, C).                                                             #
         #############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        #Affine node forward
+        # W1 = DxH
+        # b1 = 1xH
+        # X  = NxD
+        # n1_out = NxH
+        n1_out = np.dot(X, W1) + b1
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        #ReLU node forward
+        # ReLU_in = NxH
+        # ReLU_out = NxH
+        ReLU_in = n1_out
+        ReLU_out = ReLU_in
+        ReLU_out[ReLU_out < 0] = 0
+
+        #Affine node forward
+        # n2_in = NxH
+        # W2 = HxC
+        # b2 = 1xC
+        # n2_out = NxC
+        n2_in = ReLU_out
+        n2_out = np.dot(n2_in, W2) + b2
+
+        scores = n2_out
 
         # If the targets are not given then jump out, we're done
         if y is None:
@@ -91,29 +110,47 @@ class TwoLayerNet(object):
         # Compute the loss
         loss = None
         #############################################################################
-        # TODO: Finish the forward pass, and compute the loss. This should include  #
+        # Finish the forward pass, and compute the loss. This should include        #
         # both the data loss and L2 regularization for W1 and W2. Store the result  #
         # in the variable loss, which should be a scalar. Use the Softmax           #
         # classifier loss.                                                          #
         #############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        #Softmax node forward
+        # softmax_in = NxC
+        # y = 1xN
+        # softmax_out = 1xN
+        softmax_in = n2_out
+        correct_class_score = softmax_in[np.arange(0, N, 1), y]
+        normalizer = np.sum(np.exp(softmax_in), axis = 1)
+        softmax_out = np.exp(correct_class_score) / normalizer
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        #Neg log node forward
+        # log_in = 1xN
+        # log_out = 1xN
+        log_in = softmax_out
+        log_out = -np.log(log_in)
+
+        #Loss node forward
+        # loss_in = 1xN
+        # loss_out = 1x1
+        # without reg terms
+        loss_in = log_out
+        loss_out = np.sum(loss_in) / N
+
+        # Reg term
+        loss_out += reg * np.sum(W1 * W1)
+        loss_out += reg * np.sum(W2 * W2)
+        loss = loss_out
+
 
         # Backward pass: compute gradients
         grads = {}
         #############################################################################
-        # TODO: Compute the backward pass, computing the derivatives of the weights #
+        # Compute the backward pass, computing the derivatives of the weights       #
         # and biases. Store the results in the grads dictionary. For example,       #
         # grads['W1'] should store the gradient on W1, and be a matrix of same size #
         #############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         return loss, grads
 
