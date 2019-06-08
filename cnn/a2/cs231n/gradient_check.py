@@ -45,7 +45,6 @@ def eval_numerical_gradient_array(f, x, df, h=1e-5):
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
         ix = it.multi_index
-
         oldval = x[ix]
         x[ix] = oldval + h
         pos = f(x).copy()
