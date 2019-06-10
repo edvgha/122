@@ -365,7 +365,7 @@ def layernorm_backward(dout, cache):
     x, gamma, mean, var, x_hat, eps = cache
     
     m = x.shape[1]
-    
+
     dx_hat = dout * gamma
 
     dvar = (dx_hat * (x - mean[:, np.newaxis])).sum(axis = 1) *  (-0.5) * np.power((var + eps), -1.5)
@@ -418,29 +418,17 @@ def dropout_forward(x, dropout_param):
 
     if mode == 'train':
         #######################################################################
-        # TODO: Implement training phase forward pass for inverted dropout.   #
+        # Implement training phase forward pass for inverted dropout.         #
         # Store the dropout mask in the mask variable.                        #
         #######################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        mask = (np.random.rand(*x.shape) < p)
 
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        #######################################################################
-        #                           END OF YOUR CODE                          #
-        #######################################################################
+        out = (x * mask ) / p 
     elif mode == 'test':
         #######################################################################
-        # TODO: Implement the test phase forward pass for inverted dropout.   #
+        # Implement the test phase forward pass for inverted dropout.         #
         #######################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        #######################################################################
-        #                            END OF YOUR CODE                         #
-        #######################################################################
+        out = x
 
     cache = (dropout_param, mask)
     out = out.astype(x.dtype, copy=False)
@@ -462,16 +450,10 @@ def dropout_backward(dout, cache):
     dx = None
     if mode == 'train':
         #######################################################################
-        # TODO: Implement training phase backward pass for inverted dropout   #
+        # Implement training phase backward pass for inverted dropout         #
         #######################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        dx = (dout * mask) / dropout_param['p']
 
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        #######################################################################
-        #                          END OF YOUR CODE                           #
-        #######################################################################
     elif mode == 'test':
         dx = dout
     return dx
