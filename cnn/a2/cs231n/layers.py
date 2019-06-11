@@ -183,7 +183,7 @@ def batchnorm_forward(x, gamma, beta, bn_param):
         # then scale and shift the normalized data using gamma and beta.      #
         # Store the result in the out variable.                               #
         #######################################################################
-        
+
         x_hat = (x - running_mean) / np.sqrt(running_var + eps)
 
         out = gamma * x_hat + beta
@@ -225,10 +225,10 @@ def batchnorm_backward(dout, cache):
     ###########################################################################
 
     x, gamma, mean, var, x_hat, eps = cache
-    
+
     m = x.shape[0]
 
-    dx_hat = dout * gamma 
+    dx_hat = dout * gamma
 
     dvar = (dx_hat * (x - mean)).sum(axis = 0) *  (-0.5) * np.power((var + eps), -1.5)
 
@@ -238,7 +238,7 @@ def batchnorm_backward(dout, cache):
 
     dgamma = np.sum(dout * x_hat, axis = 0)
 
-    dbeta = np.sum(dout, axis = 0) 
+    dbeta = np.sum(dout, axis = 0)
 
     return dx, dgamma, dbeta
 
@@ -270,7 +270,7 @@ def batchnorm_backward_alt(dout, cache):
     x, gamma, mean, var, x_hat, eps = cache
     N = x.shape[0]
 
-    dx_hat = dout * gamma 
+    dx_hat = dout * gamma
 
     dvar = (dx_hat * ((mean - x) / (2 * np.power(var, 1.5)))).sum(axis = 0)
 
@@ -284,7 +284,7 @@ def batchnorm_backward_alt(dout, cache):
 
     dgamma = np.sum(dout * x_hat, axis = 0)
 
-    dbeta = np.sum(dout, axis = 0) 
+    dbeta = np.sum(dout, axis = 0)
 
     return dx, dgamma, dbeta
 
@@ -363,7 +363,7 @@ def layernorm_backward(dout, cache):
     ###########################################################################
 
     x, gamma, mean, var, x_hat, eps = cache
-    
+
     m = x.shape[1]
 
     dx_hat = dout * gamma
@@ -423,7 +423,7 @@ def dropout_forward(x, dropout_param):
         #######################################################################
         mask = (np.random.rand(*x.shape) < p)
 
-        out = (x * mask ) / p 
+        out = (x * mask ) / p
     elif mode == 'test':
         #######################################################################
         # Implement the test phase forward pass for inverted dropout.         #
@@ -459,6 +459,45 @@ def dropout_backward(dout, cache):
     return dx
 
 
+def conv_channel_naive(x, w, conv_param):
+    """
+    - x: Input data of shape (H, W)
+    - w: Filter weights of shape (HH, WW)
+    """
+    H, W = x.shape
+    HH, WW = w.shape
+    stride = conv_param['stride']
+    pad = conv_param['pad']
+    Hout = int(1 + (H + 2 * pad - HH) / stride)
+    Wout = int(1 + (W + 2 * pad - WW) / stride)
+    out = np.zeros((Hout, Wout))
+
+    z = np.pad(x, pad, mode = 'constant')
+
+    x_i = 0
+    for i in range(Hout):
+        x_j = 0
+        for j in range(Wout):
+            out[i][j] = np.sum(z[x_i:(x_i + HH), x_j:(x_j + WW)] * w)
+            x_j += stride
+        x_i += stride
+    return out
+
+def conv_channels_naive(x, w, conv_param):
+    """
+    - x: Input data of shape (C, H, W)
+    - w: Filter weights of shape (C, HH, WW)
+    """
+    stride = conv_param['stride']
+    pad = conv_param['pad']
+    C, H, W = x.shape
+    _, HH, WW = w.shape
+    out = np.zeros((int(1 + (H + 2 * pad - HH) / stride), int(1 + (W + 2 * pad - WW) / stride)))
+
+    for c in range(C):
+        out += conv_channel_naive(x[c], w[c], conv_param)
+    return out
+
 def conv_forward_naive(x, w, b, conv_param):
     """
     A naive implementation of the forward pass for a convolutional layer.
@@ -487,19 +526,20 @@ def conv_forward_naive(x, w, b, conv_param):
       W' = 1 + (W + 2 * pad - WW) / stride
     - cache: (x, w, b, conv_param)
     """
-    out = None
+    stride = conv_param['stride']
+    pad = conv_param['pad']
+    N, C, H, W = x.shape
+    F, C, HH, WW = w.shape
+    out = np.zeros((N, F, int(1 + (H + 2 * pad - HH) / stride), int(1 + (W + 2 * pad - WW) / stride)))
+
     ###########################################################################
-    # TODO: Implement the convolutional forward pass.                         #
+    # Implement the convolutional forward pass.                               #
     # Hint: you can use the function np.pad for padding.                      #
     ###########################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
-
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ###########################################################################
-    #                             END OF YOUR CODE                            #
-    ###########################################################################
+    for n in range(N):
+        for f in range(F):
+            out[n][f] = conv_channels_naive(x[n], w[f], conv_param) + b[f]
     cache = (x, w, b, conv_param)
     return out, cache
 
