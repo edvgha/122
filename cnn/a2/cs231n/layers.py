@@ -461,7 +461,7 @@ def dropout_backward(dout, cache):
 
 def conv_channel_naive(x, w, conv_param):
     """
-    - x: Input data of shape (H, W)
+    - x: Input data of shape (H + pad, W + pad)
     - w: Filter weights of shape (HH, WW)
     """
     H, W = x.shape
@@ -485,7 +485,7 @@ def conv_channel_naive(x, w, conv_param):
 
 def conv_channels_naive(x, w, conv_param):
     """
-    - x: Input data of shape (C, H, W)
+    - x: Input data of shape (C, H + pad, W + pad)
     - w: Filter weights of shape (C, HH, WW)
     """
     stride = conv_param['stride']
@@ -531,7 +531,6 @@ def conv_forward_naive(x, w, b, conv_param):
     N, C, H, W = x.shape
     F, C, HH, WW = w.shape
     out = np.zeros((N, F, int(1 + (H + 2 * pad - HH) / stride), int(1 + (W + 2 * pad - WW) / stride)))
-
     ###########################################################################
     # Implement the convolutional forward pass.                               #
     # Hint: you can use the function np.pad for padding.                      #
@@ -544,9 +543,58 @@ def conv_forward_naive(x, w, b, conv_param):
     return out, cache
 
 
+def conv_channels_naive_dx_backward(dout, w, conv_param):
+    """
+    - w: (HH, WW)
+    - dout: (H, W)
+    """
+
+    H, W = dout.shape
+    HH, WW = w.shape
+    out = np.zeros(dout.shape)
+
+
+    stride = conv_param['stride']
+    pad = conv_param['pad']
+    
+    out = np.pad(out, pad, mode = 'constant')
+
+
+    for i in range(H):
+        for j in range(W):
+            out[i:(i + HH), j:(j + WW)] += w * dout[i, j]
+
+    return out[pad:(pad + H), pad:(pad + W)]
+
+def conv_channels_naive_dw_backward(dout, x, HH, WW, conv_param):
+    """
+    - dout (H, W)
+    - x (H, W)
+    - out (HH, WW)
+    """
+
+    stride = conv_param['stride']
+    pad = conv_param['pad']
+    H, W = dout.shape
+
+    out = np.zeros((HH, WW))
+
+    z = np.pad(x, pad, mode = 'constant')
+
+    for i in range(H):
+        for j in range(W):
+            out += dout[i, j] * z[i:(i + HH), j:(j + WW)]
+    return out
+
+
 def conv_backward_naive(dout, cache):
     """
     A naive implementation of the backward pass for a convolutional layer.
+
+    Cache:
+    - x: Input data of shape (N, C, H, W)
+    - w: Filter weights of shape (F, C, HH, WW)
+    - b: Biases, of shape (F,)
 
     Inputs:
     - dout: Upstream derivatives.
@@ -557,18 +605,25 @@ def conv_backward_naive(dout, cache):
     - dw: Gradient with respect to w
     - db: Gradient with respect to b
     """
+    x, w, b, conv_param = cache
     dx, dw, db = None, None, None
-    ###########################################################################
-    # TODO: Implement the convolutional backward pass.                        #
-    ###########################################################################
-    # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+    N, C, H, W = x.shape
+    F, C, HH, WW = w.shape
 
-    pass
+    dx = np.zeros(x.shape)
+    dw = np.zeros(w.shape)
+    db = np.zeros(b.shape)
+    ###########################################################################
+    # Implement the convolutional backward pass.                              #
+    # dout - (N, F, H, W)                                                     #
+    ###########################################################################
+    for n in range(N):
+        for f in range(F):
+            db[f] += np.sum(dout[n][f])
+            for c in range(C):
+                dw[f][c] += conv_channels_naive_dw_backward(dout[n][f], x[n][c], HH, WW, conv_param)
+                dx[n][c] += conv_channels_naive_dx_backward(dout[n][f], w[f][c], conv_param)
 
-    # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-    ###########################################################################
-    #                             END OF YOUR CODE                            #
-    ###########################################################################
     return dx, dw, db
 
 
