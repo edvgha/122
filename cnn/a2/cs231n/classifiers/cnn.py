@@ -34,12 +34,30 @@ class ThreeLayerConvNet(object):
         - reg: Scalar giving L2 regularization strength
         - dtype: numpy datatype to use for computation.
         """
+
+        rgb, H, W = input_dim
+        pool_height = 2
+        pool_width = 2
+        pool_stride = 2
+
         self.params = {}
+
+        self.params['W1'] = weight_scale * np.random.randn(num_filters, rgb, filter_size, filter_size)
+        self.params['b1'] = np.zeros(num_filters)
+
+        H_mp_out = int(1 + (H - pool_height) / pool_stride)
+        W_mp_out = int(1 + (W - pool_width) / pool_stride)
+        self.params['W2'] = weight_scale * np.random.randn(num_filters * H_mp_out * W_mp_out, hidden_dim)
+        self.params['b2'] = np.zeros(hidden_dim)
+
+        self.params['W3'] = weight_scale * np.random.randn(hidden_dim, num_classes)
+        self.params['b3'] = np.zeros(num_classes)
+
         self.reg = reg
         self.dtype = dtype
 
         ############################################################################
-        # TODO: Initialize weights and biases for the three-layer convolutional    #
+        # Initialize weights and biases for the three-layer convolutional          #
         # network. Weights should be initialized from a Gaussian centered at 0.0   #
         # with standard deviation equal to weight_scale; biases should be          #
         # initialized to zero. All weights and biases should be stored in the      #
@@ -53,15 +71,7 @@ class ThreeLayerConvNet(object):
         # **the width and height of the input are preserved**. Take a look at      #
         # the start of the loss() function to see how that happens.                #                           
         ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
-
+        
         for k, v in self.params.items():
             self.params[k] = v.astype(dtype)
 
@@ -79,35 +89,32 @@ class ThreeLayerConvNet(object):
         # pass conv_param to the forward pass for the convolutional layer
         # Padding and stride chosen to preserve the input spatial size
         filter_size = W1.shape[2]
-        conv_param = {'stride': 1, 'pad': (filter_size - 1) // 2}
+        conv_param = {'stride': 1, 'pad': int((filter_size - 1) / 2)}
 
         # pass pool_param to the forward pass for the max-pooling layer
         pool_param = {'pool_height': 2, 'pool_width': 2, 'stride': 2}
 
         scores = None
         ############################################################################
-        # TODO: Implement the forward pass for the three-layer convolutional net,  #
+        # Implement the forward pass for the three-layer convolutional net,        #
         # computing the class scores for X and storing them in the scores          #
         # variable.                                                                #
         #                                                                          #
         # Remember you can use the functions defined in cs231n/fast_layers.py and  #
         # cs231n/layer_utils.py in your implementation (already imported).         #
         ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
+        out_crp, cache_crp = conv_relu_pool_forward(X, self.params['W1'], self.params['b1'], conv_param, pool_param)
+        out_ar, cache_ar = affine_relu_forward(out_crp, self.params['W2'], self.params['b2'])
+        out_a, cache_a = affine_forward(out_ar, self.params['W3'], self.params['b3'])
+        scores = out_a.copy()
 
         if y is None:
             return scores
 
         loss, grads = 0, {}
+
         ############################################################################
-        # TODO: Implement the backward pass for the three-layer convolutional net, #
+        # Implement the backward pass for the three-layer convolutional net,       #
         # storing the loss and gradients in the loss and grads variables. Compute  #
         # data loss using softmax, and make sure that grads[k] holds the gradients #
         # for self.params[k]. Don't forget to add L2 regularization!               #
@@ -116,13 +123,30 @@ class ThreeLayerConvNet(object):
         # automated tests, make sure that your L2 regularization includes a factor #
         # of 0.5 to simplify the expression for the gradient.                      #
         ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        loss, dx_softmax = softmax_loss(out_a, y)
+        dx_a, dW3, db3 = affine_backward(dx_softmax, cache_a)
+        dx_ar, dW2, db2 = affine_relu_backward(dx_a, cache_ar)
+        dx, dW1, db1 = conv_relu_pool_backward(dx_ar, cache_crp)
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
+        F, C, _, _ = self.params['W1'].shape
+
+        for f in range(F):
+            for c in range(C):
+                dW1 += self.reg * self.params['W1'][f][c]
+                loss += 0.5 * self.reg * np.sum(self.params['W1'][f][c] * self.params['W1'][f][c])
+
+        dW2 += self.reg * self.params['W2']
+        dW3 += self.reg * self.params['W3']
+
+        grads['W1'] = dW1
+        grads['b1'] = db1
+        grads['W2'] = dW2
+        grads['b2'] = db2
+        grads['W3'] = dW3
+        grads['b3'] = db3
+
+        loss += 0.5 * self.reg * np.sum(self.params['W2'] * self.params['W2'])
+        loss += 0.5 * self.reg * np.sum(self.params['W3'] * self.params['W3'])
 
         return loss, grads
