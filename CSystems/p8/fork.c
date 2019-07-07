@@ -7,7 +7,7 @@ int main()
     pid = Fork();
     if (pid == 0) {
         printf("child : x = %d\n", ++x);
-        exit(0);
+        //exit(0);
     }
 
     printf("parent : x = %d\n", --x);
