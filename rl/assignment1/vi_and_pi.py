@@ -1,6 +1,7 @@
 ### MDP Value Iteration and Policy Iteration
 
 import numpy as np
+from numpy import linalg as LA
 import gym
 import time
 from lake_envs import *
@@ -52,11 +53,18 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
 	"""
 
 	value_function = np.zeros(nS)
+	new_value_function = np.zeros(nS)
 
+        delta = tol
 	############################
-	# YOUR IMPLEMENTATION HERE #
-
-
+        while delta >= tol:
+            for state in range(nS):
+                action = policy[state]
+                (probability, nextstate, reward, terminal) = P[state][action]
+                new_value_function[state] += probability * (reward + gamma * value_function[nextstate])
+            delta = LA.norm((value_function - new_value_function), np.inf)
+            value_function = new_value_function
+            new_value_function = np.zeros(nS)
 	############################
 	return value_function
 
@@ -84,9 +92,13 @@ def policy_improvement(P, nS, nA, value_from_policy, policy, gamma=0.9):
 	new_policy = np.zeros(nS, dtype='int')
 
 	############################
-	# YOUR IMPLEMENTATION HERE #
-
-
+        new_policy = policy
+        for state in range(nS):
+            for action in range(nA):
+                (probability, nextstate, reward, terminal) = P[state][action]
+                pi_action = probability * (reward + gamma * value_from_policy[nextstate])
+                if pi_action > value_from_policy[state]:
+                    new_policy[state] = action
 	############################
 	return new_policy
 
@@ -113,9 +125,14 @@ def policy_iteration(P, nS, nA, gamma=0.9, tol=10e-3):
 	policy = np.zeros(nS, dtype=int)
 
 	############################
-	# YOUR IMPLEMENTATION HERE #
-
-
+        while True:
+            value_from_policy = policy_evaluation(P, nS, nA, policy, gamma, tol)
+            improved_policy = policy_improvement(P, nS, nA, value_from_policy, policy, gamma)
+            value_function = value_from_policy
+            if np.array_equal(improved_policy, policy):
+                break
+            else:
+                policy = improved_policy
 	############################
 	return value_function, policy
 
