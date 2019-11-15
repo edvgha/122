@@ -60,9 +60,9 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
     while delta >= tol:
         for state in range(nS):
             action = policy[state]
-            pi_action = 0
-            for (probability, nextstate, reward, terminal) in P[state][action]:
-                new_value_function[state] += probability * (reward + gamma * value_function[nextstate])
+            p = P[state][action]
+            probability, nextstate, reward, terminal = p[0]
+            new_value_function[state] += probability * (reward + gamma * value_function[nextstate])
         delta = LA.norm((value_function - new_value_function), np.inf)
         value_function = new_value_function
         new_value_function = np.zeros(nS)
@@ -97,9 +97,9 @@ def policy_improvement(P, nS, nA, value_from_policy, policy, gamma=0.9):
         Max = value_from_policy[state]
         pi_p = policy[state]
         for action in range(nA):
-            pi_action = 0
-            for (probability, nextstate, reward, terminal) in P[state][action]:
-                pi_action += probability * (reward + gamma * value_from_policy[nextstate])
+            p = P[state][action]
+            probability, nextstate, reward, terminal = p[0]
+            pi_action = probability * (reward + gamma * value_from_policy[nextstate])
             if pi_action >= Max:
                 Max = pi_action
                 pi_p = action
@@ -131,16 +131,18 @@ def policy_iteration(P, nS, nA, gamma=0.9, tol=10e-3):
 
     ############################
     while True:
+        #print ("-------------------------------------")
         value_from_policy = policy_evaluation(P, nS, nA, policy, gamma, tol)
+        #print ('value_from_policy : ', value_from_policy)
         improved_policy = policy_improvement(P, nS, nA, value_from_policy, policy, gamma)
+        #print ('improved_policy: ', improved_policy)
         value_function = value_from_policy
+        #print ("+++++++++++++++++++++++++++++++++++++")
         if np.array_equal(improved_policy, policy):
             break
         else:
             policy = improved_policy
     ############################
-    print ('value_function', value_function)
-    print ('policy', policy)
     return value_function, policy
 
 def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
@@ -169,30 +171,26 @@ def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
         delta = 0
         for state in range(nS):
             v = value_function[state]
-            max_value = value_function[state]
             for action in range(nA):
-                pi_action = 0
-                for (probability, nextstate, reward, terminal) in P[state][action]:
-                    pi_action += probability * (reward + gamma * value_function[nextstate])
-                if pi_action >  max_value:
-                    max_value = pi_action
-            value_function[state] = max_value
-            delta = max(delta, abs(value_function[state] - v))
+                p = P[state][action]
+                probability, nextstate, reward, terminal = p[0]
+                pi_action = probability * (reward + gamma * value_function[nextstate])
+                if pi_action > value_function[state]:
+                    value_function[state] = pi_action
+                    delta = max(delta, abs(value_function[state] - v))
     #Policy improvement
     for state in range(nS):
         Max = value_function[state]
         best_action = policy[state]
         for action in range(nA):
-            pi_action = 0
-            for (probability, nextstate, reward, terminal) in P[state][action]:
-                pi_action += probability * (reward + gamma * value_function[nextstate])
+            p = P[state][action]
+            probability, nextstate, reward, terminal = p[0]
+            pi_action = probability * (reward + gamma * value_function[nextstate])
             if pi_action >= Max:
                 best_action = action
                 Max = pi_action
         policy[state] = best_action
     ############################
-    print ('value_function', value_function)
-    print ('policy', policy)
     return value_function, policy
 
 def render_single(env, policy, max_steps=100):
@@ -219,8 +217,8 @@ def render_single(env, policy, max_steps=100):
 if __name__ == "__main__":
 
     # comment/uncomment these lines to switch between deterministic/stochastic environments
-    #env = gym.make("Deterministic-4x4-FrozenLake-v0")
-    env = gym.make("Stochastic-4x4-FrozenLake-v0")
+    env = gym.make("Deterministic-4x4-FrozenLake-v0")
+    #env = gym.make("Stochastic-4x4-FrozenLake-v0")
 
     print("\n" + "-"*25 + "\nBeginning Policy Iteration\n" + "-"*25)
 
@@ -230,4 +228,4 @@ if __name__ == "__main__":
     print("\n" + "-"*25 + "\nBeginning Value Iteration\n" + "-"*25)
 
     V_vi, p_vi = value_iteration(env.P, env.nS, env.nA, gamma=0.9, tol=1e-3)
-    render_single(env, p_vi, 1000)
+    render_single(env, p_vi, 100)
