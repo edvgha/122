@@ -67,7 +67,6 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
         value_function = new_value_function
         new_value_function = np.zeros(nS)
     ############################
-    print (value_function)
     return value_function
 
 
@@ -94,14 +93,17 @@ def policy_improvement(P, nS, nA, value_from_policy, policy, gamma=0.9):
     new_policy = np.zeros(nS, dtype='int')
 
     ############################
-    new_policy = policy
     for state in range(nS):
+        Max = value_from_policy[state]
+        pi_p = policy[state]
         for action in range(nA):
             p = P[state][action]
             probability, nextstate, reward, terminal = p[0]
             pi_action = probability * (reward + gamma * value_from_policy[nextstate])
-            if pi_action > value_from_policy[state]:
-                new_policy[state] = action
+            if pi_action > Max:
+                Max = pi_action
+                pi_p = action
+        new_policy[state] = pi_p
     ############################
     return new_policy
 
@@ -129,9 +131,13 @@ def policy_iteration(P, nS, nA, gamma=0.9, tol=10e-3):
 
     ############################
     while True:
+        #print ("-------------------------------------")
         value_from_policy = policy_evaluation(P, nS, nA, policy, gamma, tol)
+        #print ('value_from_policy : ', value_from_policy)
         improved_policy = policy_improvement(P, nS, nA, value_from_policy, policy, gamma)
+        #print ('improved_policy: ', improved_policy)
         value_function = value_from_policy
+        #print ("+++++++++++++++++++++++++++++++++++++")
         if np.array_equal(improved_policy, policy):
             break
         else:
@@ -231,15 +237,16 @@ if __name__ == "__main__":
 
     print("\n" + "-"*25 + "\nBeginning Policy Iteration\n" + "-"*25)
 
-    print (env.P)
+    #print (env.P)
     V_pi, p_pi = policy_iteration(env.P, env.nS, env.nA, gamma=0.9, tol=1e-3)
+    print ("+++++++++++++++++++++++++++")
     print ("V_PI")
     print (V_pi)
     print ("P_PI")
     print (p_pi)
     print ("+++++++++++++++++++++++++++")
-    assert(False)
     render_single(env, p_pi, 100)
+    assert(False)
 
     print("\n" + "-"*25 + "\nBeginning Value Iteration\n" + "-"*25)
 
