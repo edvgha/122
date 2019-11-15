@@ -165,33 +165,31 @@ def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
 
     value_function = np.zeros(nS)
     policy = np.zeros(nS, dtype=int)
-    deltas = np.zeros(nS, dtype=float)
     delta = tol
     ############################
     while delta >= tol:
+        delta = 0
         for state in range(nS):
-            Max = 0
-            max_value = 0
+            v = value_function[state]
             for action in range(nA):
                 p = P[state][action]
                 probability, nextstate, reward, terminal = p[0]
-                value = probability * (reward + gamma * value_function[nextstate])
-                if value > Max:
-                    Max = value
-                    max_value = value
-            deltas[state] = abs(value_function - max_value)
-            value_function[state] = max_value
-        delta = np.amax(deltas, axis=0)
-    #compute policy
+                pi_action = probability * (reward + gamma * value_function[nextstate])
+                if pi_action > value_function[state]:
+                    value_function[state] = pi_action
+                    delta = max(delta, abs(value_function[state] - v))
+    #Policy improvement
     for state in range(nS):
-        Max = 0
+        Max = value_function[state]
+        best_action = policy[state]
         for action in range(nA):
             p = P[state][action]
             probability, nextstate, reward, terminal = p[0]
-            value = probability * (reward + gamma * value_function[nextstate])
-            if value > Max:
-                Max = value
-                policy[state] = action
+            pi_action = probability * (reward + gamma * value_function[nextstate])
+            if pi_action >= Max:
+                best_action = action
+                Max = pi_action
+        policy[state] = best_action
     ############################
     return value_function, policy
 
@@ -237,16 +235,8 @@ if __name__ == "__main__":
 
     print("\n" + "-"*25 + "\nBeginning Policy Iteration\n" + "-"*25)
 
-    #print (env.P)
     V_pi, p_pi = policy_iteration(env.P, env.nS, env.nA, gamma=0.9, tol=1e-3)
-    print ("+++++++++++++++++++++++++++")
-    print ("V_PI")
-    print (V_pi)
-    print ("P_PI")
-    print (p_pi)
-    print ("+++++++++++++++++++++++++++")
     render_single(env, p_pi, 100)
-    assert(False)
 
     print("\n" + "-"*25 + "\nBeginning Value Iteration\n" + "-"*25)
 
