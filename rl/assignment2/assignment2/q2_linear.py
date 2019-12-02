@@ -23,6 +23,9 @@ class Linear(DQN):
         # this information might be useful
         state_shape = list(self.env.observation_space.shape)
 
+        h, w, c = state_shape
+        hist = self.config.state_history
+
         ##############################################################
         """
         TODO: 
@@ -50,7 +53,12 @@ class Linear(DQN):
         ##############################################################
         ################YOUR CODE HERE (6-15 lines) ##################
 
-        pass
+        self.s = tf.placeholder(tf.uint8, shape=(None, h, w, c * hist), name="batch_of_states")
+        self.a = tf.placeholder(tf.int32, shape=(None), name="batch_actions")
+        self.r = tf.placeholder(tf.float32, shape=(None), name="batch_rewards")
+        self.sp = tf.placeholder(tf.uint8, shape=(None, h, w, c * hist), name="batch_of_next_states")
+        self.done_mask = tf.placeholder(tf.bool, shape=(None), name="batch_done_mask")
+        self.lr = tf.placeholder(tf.float32, name="learning_rate")
 
         ##############################################################
         ######################## END YOUR CODE #######################
@@ -88,8 +96,16 @@ class Linear(DQN):
         ##############################################################
         ################ YOUR CODE HERE - 2-3 lines ################## 
         
-        pass
 
+        print (state)
+        flatten = layers.flatten(state, scope=scope)
+        print (flatten)
+        out = layers.fully_connected(flatten,
+                                     num_actions, 
+                                     activation_fn=None, 
+                                     reuse=reuse, 
+                                     scope=scope)
+        print (out)
         ##############################################################
         ######################## END YOUR CODE #######################
 
@@ -132,7 +148,16 @@ class Linear(DQN):
         ##############################################################
         ################### YOUR CODE HERE - 5-10 lines #############
         
-        pass
+        v_list = tf.get_collection(key=tf.GraphKeys.GLOBAL_VARIABLES, scope=q_scope)
+        v_tar_list = tf.get_collection(key=tf.GraphKeys.GLOBAL_VARIABLES, scope=target_q_scope)
+        print ("V_LIST:", v_list)
+        assert(False)
+
+        op = []
+        for v, v_tar in zip(v_list, v_tar_list):
+            op.append(tf.assign(v_tar, v))
+
+        self.update_target_op = tf.group(*op)
 
         ##############################################################
         ######################## END YOUR CODE #######################
@@ -171,8 +196,9 @@ class Linear(DQN):
         ##############################################################
         ##################### YOUR CODE HERE - 4-5 lines #############
 
-        pass
-
+        q_samp = self.r + self.config.gamma * tf.reduce_max(target_q, axis=1) * (1 - tf.cast(self.done_mask, tf.float32))
+        q_esti = tf.reduce_sum(tf.one_hot(self.a, num_actions) * q, axis=1)
+        self.loss = tf.reduce_mean(tf.squared_difference(q_samp, q_esti))
         ##############################################################
         ######################## END YOUR CODE #######################
 
@@ -208,8 +234,16 @@ class Linear(DQN):
         ##############################################################
         #################### YOUR CODE HERE - 8-12 lines #############
 
-        pass
-        
+        adam = tf.train.AdamOptimizer(learning_rate=self.lr)
+        var = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=scope)
+        grad = adam.compute_gradients(self.loss, var_list=var)
+        if self.config.grad_clip:
+            grad = [(tf.clip_by_norm(v_grad, self.config.clip_val), v) \
+                for v_grad, v in grad if v_grad is not None]
+        self.train_op = adam.apply_gradients(grad)
+        grad, _ = zip(*grad)
+        self.grad_norm = tf.global_norm(grad)
+
         ##############################################################
         ######################## END YOUR CODE #######################
     
