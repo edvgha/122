@@ -150,8 +150,6 @@ class Linear(DQN):
         
         v_list = tf.get_collection(key=tf.GraphKeys.GLOBAL_VARIABLES, scope=q_scope)
         v_tar_list = tf.get_collection(key=tf.GraphKeys.GLOBAL_VARIABLES, scope=target_q_scope)
-        print ("V_LIST:", v_list)
-        assert(False)
 
         op = []
         for v, v_tar in zip(v_list, v_tar_list):
