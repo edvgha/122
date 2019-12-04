@@ -55,12 +55,20 @@ class NatureQN(Linear):
         ##############################################################
         ################ YOUR CODE HERE - 10-15 lines ################ 
 
-        pass
+        with tf.variable_scope(scope, reuse=reuse):
+            h1 = layers.conv2d(state, 16, 8, stride=4)
+
+            h2 = layers.conv2d(h1, 32, 4, stride=2)
+
+            stick = layers.flatten(h2)
+
+            h3 = layers.fully_connected(stick, 256)
+
+            out = layers.fully_connected(h3, num_actions, activation_fn=None)
 
         ##############################################################
         ######################## END YOUR CODE #######################
         return out
-
 
 """
 Use deep Q network for test environment.
