@@ -55,12 +55,11 @@ def build_mlp(
   #######################################################
   #########   YOUR CODE HERE - 7-20 lines.   ############
   with tf.variable_scope(scope) as _:
-    x = mlp_input
-    for _ in range(n_layers):
-        x = tf.keras.layers.Dense(size, activation=tf.nn.relu)(x)
-    output = tf.keras.layers.Dense(output_size, activation=output_activation)(x)
-    print ('Output_size:', output_size)
-    return output
+      layer = mlp_input
+      for _ in range(n_layers):
+          layer = tf.layers.dense(layer, size, activation=tf.nn.relu)
+      output = tf.layers.dense(layer, output_size, activation=output_activation)
+  return output
   #######################################################
   #########          END YOUR CODE.          ############
 
@@ -117,14 +116,14 @@ class PG(object):
     """
     #######################################################
     #########   YOUR CODE HERE - 8-12 lines.   ############
-    self.observation_placeholder = tf.placeholder(tf.float32, shape=(None, self.observation_dim), name="observation") 
+    self.observation_placeholder = tf.placeholder(dtype=tf.float32, shape=[None, self.observation_dim], name="observation")
     if self.discrete:
-        # "I don't know why their can't be (None, self.action_dim)
-        self.action_placeholder = tf.placeholder(tf.int32, shape=(None,), name="action")  
+      self.action_placeholder = tf.placeholder(dtype=tf.int32, shape=[None], name="discrete_action")
     else:
-        self.action_placeholder = tf.placeholder(tf.float32, shape=(None, self.action_dim), name="action") 
+      self.action_placeholder = tf.placeholder(dtype=tf.float32, shape=[None, self.action_dim], name="cont_action")
+
     # Define a placeholder for advantages
-    self.advantage_placeholder = tf.placeholder(tf.float32, shape=(None,), name="advantage")
+    self.advantage_placeholder = tf.placeholder(dtype=tf.float32, shape=[None], name="advantage")
     #######################################################
     #########          END YOUR CODE.          ############
 
@@ -177,35 +176,16 @@ class PG(object):
     """
     #######################################################
     #########   YOUR CODE HERE - 5-10 lines.   ############
+
     if self.discrete:
-        print ("DISCRETE")
-        action_logits = build_mlp(self.observation_placeholder,
-                output_size=self.action_dim,
-                scope=scope,
-                n_layers=self.config.n_layers,
-                size=self.config.layer_size,
-                output_activation=self.config.activation)
+        action_logits = build_mlp(self.observation_placeholder, self.action_dim, "discrete", self.config.n_layers, self.config.layer_size, self.config.activation)
         self.sampled_action = tf.reshape(tf.multinomial(action_logits, 1), [-1])
-        self.logprob = -tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.action_placeholder,
-                logits=action_logits)
+        self.logprob = -tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.action_placeholder, logits=action_logits)
     else:
-        print ("CONTINOUS")
-        action_means = build_mlp(self.observation_placeholder,
-                output_size=self.action_dim,
-                scope=scope,
-                n_layers=self.config.n_layers,
-                size=self.config.layer_size,
-                #output_activation=self.config.activation)
-                output_activation=None)
-        print ("action_means:", action_means)
-        log_std = tf.get_variable("log_std", shape=[1, self.action_dim])
-        print ("log_std:", log_std)
-        self.sampled_action = tf.random_normal(shape=tf.shape(action_means), mean=action_means, stddev=log_std)
-        #self.sampled_action = tf.random_normal((1,), mean=action_means, stddev=log_std)
-        print  ("sampled_action:", self.sampled_action)
-        #self.logprob = tf.contrib.distributions.MultivariateNormalDiag(action_means, log_std)
-        self.logprob = tf.contrib.distributions.MultivariateNormalDiag(loc=action_means, scale_diag=log_std).log_prob(self.action_placeholder)
-        print  ("logprob:", self.logprob)
+        action_means = build_mlp(self.observation_placeholder, self.action_dim, "continuous", self.config.n_layers, self.config.layer_size, self.config.activation)
+        log_std = tf.get_variable("std", [self.action_dim], dtype=tf.float32)
+        self.sampled_action = tf.random_normal(shape=tf.shape(action_means), mean=action_means, stddev=tf.exp(log_std))
+        self.logprob = tf.contrib.distributions.MultivariateNormalDiag(loc=action_means, scale_diag=tf.exp(log_std)).log_prob(self.action_placeholder)
     #######################################################
     #########          END YOUR CODE.          ############
 
@@ -237,7 +217,9 @@ class PG(object):
     """
     ######################################################
     #########   YOUR CODE HERE - 1-2 lines.   ############
+
     self.train_op = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(self.loss)
+
     #######################################################
     #########          END YOUR CODE.          ############
 
@@ -266,14 +248,9 @@ class PG(object):
     """
     ######################################################
     #########   YOUR CODE HERE - 4-8 lines.   ############
-    self.baseline = build_mlp(self.observation_placeholder,
-            output_size=1,
-            scope=scope,
-            n_layers=self.config.n_layers,
-            size=self.config.layer_size)
-    self.baseline_target_placeholder = tf.placeholder(tf.float32, shape=(None, ))
-    loss = tf.losses.mean_squared_error(self.baseline_target_placeholder, tf.squeeze(self.baseline))
-    self.update_baseline_op = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(loss)
+    self.baseline = tf.squeeze(build_mlp(self.observation_placeholder, 1, scope, self.config.n_layers, self.config.layer_size))
+    self.baseline_target_placeholder = tf.placeholder(shape=[None], name="baseline", dtype=tf.float32)
+    self.update_baseline_op = tf.train.AdamOptimizer(self.lr).minimize(tf.losses.mean_squared_error(self.baseline_target_placeholder, self.baseline))
     #######################################################
     #########          END YOUR CODE.          ############
 
@@ -504,9 +481,13 @@ class PG(object):
     #######################################################
     #########   YOUR CODE HERE - 5-10 lines.   ############
     if self.config.use_baseline:
-        adv -= self.sess.run(self.baseline, feed_dict={self.observation_placeholder : observations}).squeeze()
+        b_n = self.sess.run(self.baseline, feed_dict={self.observation_placeholder: observations})
+        b_n = b_n * np.std(adv, axis=0) + np.mean(adv, axis=0)
+        adv = adv - b_n 
     if self.config.normalize_advantage:
-        adv = (adv - adv.mean()) / (adv.std() + 1e-12)
+        adv_mean = np.mean(adv, axis=0)
+        adv_std = np.std(adv, axis=0)
+        adv = (adv - adv_mean) / (adv_std + 1e-7)
     #######################################################
     #########          END YOUR CODE.          ############
     return adv
@@ -524,8 +505,10 @@ class PG(object):
     """
     #######################################################
     #########   YOUR CODE HERE - 1-5 lines.   ############
-    self.sess.run(self.update_baseline_op, feed_dict={self.baseline_target_placeholder:returns,
-        self.observation_placeholder:observations})
+    q_n_mean = np.mean(returns, axis=0)
+    q_n_std = np.std(returns, axis=0)
+    q_n = (returns - q_n_mean) / (q_n_std + 1e-7)
+    self.sess.run(self.update_baseline_op, feed_dict={self.observation_placeholder: observations, self.baseline_target_placeholder: q_n})
     #######################################################
     #########          END YOUR CODE.          ############
 
