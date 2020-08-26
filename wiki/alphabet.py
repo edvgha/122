@@ -151,7 +151,6 @@ def is_arm_shallow_word(w):
             brr += 1
         else:
             unknowns += 1
-            print (unknowns)
         i += 1
     if unknowns != 0:
         return False
@@ -161,7 +160,13 @@ def is_arm_shallow_word(w):
         
     return True
 
-def transform(w):
+def eliminate_front_hyphen(word):
+    i = 0
+    while i < len(word) and (word[i] == '-'):
+        i += 1
+    return word[i:]
+
+def transform(w, ignore_word = ' '):
     '''
     FROM
     +---+-------+-------------------------------+-------+---+
@@ -173,7 +178,7 @@ def transform(w):
     +-------+-------------------------------+-------+
     '''
     if not is_arm_shallow_word(w):
-        return 'ignore_word'
+        return ignore_word
 
     # Trim front
     i = 0
@@ -189,7 +194,7 @@ def transform(w):
     while k <= j:
         if not is_arm_letter(w[k]) and w[k] != '-':
             if m != -1:
-                return 'ignore_word'
+                return ignore_word
             else:
                 m = k
         k += 1
@@ -198,12 +203,15 @@ def transform(w):
     if m == -1:
         return w[i:j + 1]
 
-    # Returns longest half
-    return w[i:m] if m - i > j - m else w[m + 1:j + 1]
+    # Get longest half
+    word = w[i:m] if m - i > j - m else w[m + 1:j + 1]
 
-def tokenize_and_transform(text):
+    # Eliminate front hyphen
+    return eliminate_front_hyphen(word)
+
+def tokenize_and_transform(text, ignore_word = ' '):
     words = (text.lower()).split()
     transformed_text = []
     for w in words:
-        transformed_text.append(transform(w))
+        transformed_text.append(transform(w, ignore_word))
     return ' '.join(transformed_text)

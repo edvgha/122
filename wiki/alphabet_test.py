@@ -36,6 +36,14 @@ class TestAlphabet(unittest.TestCase):
         self.assertTrue(alphabet.is_arm_word('մեծ'))
         self.assertTrue(alphabet.is_arm_word('մտքերի'))
 
+    def test_eliminate_front_hyphen(self):
+        actual = alphabet.eliminate_front_hyphen('--սպեցիֆիկ')
+        self.assertEqual(actual, 'սպեցիֆիկ')
+        actual = alphabet.eliminate_front_hyphen('-սպեցիֆիկ')
+        self.assertEqual(actual, 'սպեցիֆիկ')
+        actual = alphabet.eliminate_front_hyphen('-ռամզես')
+        self.assertEqual(actual, 'ռամզես')
+
     def test_transform(self):
         l = ["|ես", 
                 "zfc-ն:վերոնշյալ", 
@@ -88,13 +96,13 @@ class TestAlphabet(unittest.TestCase):
                 ]
         idx = 0
         for w in l:
-            self.assertEqual(expected[idx], alphabet.transform(w))
+            self.assertEqual(expected[idx], alphabet.transform(w, 'ignore_word'))
             idx += 1
 
     def test_tokenize_and_transform(self):
         text = '77 թվական, ոչ նահանջ տարի, ըստ գրիգորյան օրացույցի սկսում է ուրբաթ։ սա մեր թվարկության 77 թվականն է, i դարի 77-րդ տարին։ == դեպքեր == == ծնունդներ == == մահեր =='
         expected = 'ignore_word թվական ոչ նահանջ տարի ըստ գրիգորյան օրացույցի սկսում է ուրբաթ սա մեր թվարկության ignore_word թվականն ignore_word ignore_word դարի ignore_word տարին ignore_word դեպքեր ignore_word ignore_word ծնունդներ ignore_word ignore_word մահեր ignore_word'
-        actual = alphabet.tokenize_and_transform(text)
+        actual = alphabet.tokenize_and_transform(text, 'ignore_word')
         self.assertEqual(actual, expected)
 
 if __name__ == '__main__':
