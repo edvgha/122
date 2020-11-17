@@ -6,9 +6,12 @@ import re
 if 'hy' in wikipedia.languages():
     print ('ARMENIA')
 wikipedia.set_lang("hy")
-queue = set()
-queue.add('Հայաստան')
-visited = set()
+
+queue = pickle.load( open( "queue.p", "rb" ) )
+visited = pickle.load( open( "visited.p", "rb" ) )
+
+print ('queue size:', len(queue))
+print ('visited size:', len(visited))
 
 num_pages_processed = 0
 
@@ -17,7 +20,7 @@ def process_and_save(content, title):
         content = re.sub('[\n]', ' ', content)
         #content = re.sub('[=’:`)(,.՞»«―՝։՜]', '', content)
         content = ' '.join((content.lower()).split())
-        file_name = 'arm_wiki_data_1/{0}'.format(title)
+        file_name = 'arm_wiki_data_3/{0}'.format(title)
         f = open(file_name, "w")
         n = f.write(content)
         f.close()
