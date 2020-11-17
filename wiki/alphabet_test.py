@@ -26,6 +26,28 @@ class TestAlphabet(unittest.TestCase):
         self.assertTrue(alphabet.is_arm_modifier('՜'))
         self.assertTrue(alphabet.is_arm_modifier('՛'))
 
+    def test_trim(self):
+        self.assertEqual('և', alphabet.trim('և՚'))
+        self.assertEqual('և', alphabet.trim('և՛'))
+        self.assertEqual('և', alphabet.trim('և՜'))
+        self.assertEqual('ևամբողջ', alphabet.trim('ևամբողջ՛'))
+        self.assertEqual('ևանվտանգ', alphabet.trim('ևանվտանգ՛'))
+        self.assertEqual('ևառաջնակարգ', alphabet.trim('ևառաջնակարգ՛'))
+        self.assertEqual('ևբոլիվիայի', alphabet.trim('ևբոլիվիայի՛'))
+        self.assertEqual('ևբուսական', alphabet.trim('ևբուսական՛'))
+        self.assertEqual('ֆրանցիսկոսը', alphabet.trim('ֆրանցիսկոսը՞'))
+        self.assertEqual('օհ', alphabet.trim('օհ՛'))
+        self.assertEqual('օհ', alphabet.trim('օհ՜'))
+        self.assertEqual('և', alphabet.trim('և'))
+        self.assertEqual('ևամբողջ', alphabet.trim('ևամբողջ'))
+        self.assertEqual('ևանվտանգ', alphabet.trim('ևանվտանգ'))
+        self.assertEqual('ևառաջնակարգ', alphabet.trim('ևառաջնակարգ'))
+        self.assertEqual('ևբոլիվիայի', alphabet.trim('ևբոլիվիայի'))
+        self.assertEqual('ևբուսական', alphabet.trim('ևբուսական'))
+        self.assertEqual('ֆրանցիսկոսը', alphabet.trim('ֆրանցիսկոսը'))
+        self.assertEqual('օհ', alphabet.trim('օհ'))
+
+
     def test_is_arm_word(self):
         self.assertFalse(alphabet.is_arm_word('մ/ժ'))
         self.assertFalse(alphabet.is_arm_word('կգ:'))
@@ -35,6 +57,8 @@ class TestAlphabet(unittest.TestCase):
         self.assertTrue(alphabet.is_arm_word('է'))
         self.assertTrue(alphabet.is_arm_word('մեծ'))
         self.assertTrue(alphabet.is_arm_word('մտքերի'))
+        self.assertTrue(alphabet.is_arm_word('աչքաթողանք'))
+        self.assertTrue(alphabet.is_arm_word('աչքանի'))
 
     def test_eliminate_front_hyphen(self):
         actual = alphabet.eliminate_front_hyphen('--սպեցիֆիկ')

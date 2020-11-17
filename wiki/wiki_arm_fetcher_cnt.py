@@ -20,7 +20,7 @@ def process_and_save(content, title):
         content = re.sub('[\n]', ' ', content)
         #content = re.sub('[=’:`)(,.՞»«―՝։՜]', '', content)
         content = ' '.join((content.lower()).split())
-        file_name = 'arm_wiki_data_3/{0}'.format(title)
+        file_name = 'arm_wiki_data_5/{0}'.format(title)
         f = open(file_name, "w")
         n = f.write(content)
         f.close()
@@ -34,7 +34,7 @@ while len(queue) > 0:
     title = queue.pop()
     visited.add(title)
     print('it{0}: Processing {1}...'.format(num_pages_processed, title))
-    time.sleep(3)
+    time.sleep(2)
     try:
         wiki_page = wikipedia.page(title=title)
         process_and_save(wiki_page.content, title)

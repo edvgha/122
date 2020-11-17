@@ -1,3 +1,4 @@
+import re
 alphabet = {chr(int(0x0561)), 
         chr(int(0x0562)),
         chr(int(0x0563)),
@@ -166,6 +167,17 @@ def eliminate_front_hyphen(word):
         i += 1
     return word[i:]
 
+def trim(w):
+    # Trim front
+    i = 0
+    while i < len(w) and (not is_arm_letter(w[i])):
+            i += 1
+    # Trim back 
+    j = len(w) - 1
+    while j >= 0 and (not is_arm_letter(w[j])):
+            j -= 1
+    return w[i:j + 1]
+
 def transform(w, ignore_word = ' '):
     '''
     FROM
@@ -209,9 +221,11 @@ def transform(w, ignore_word = ' '):
     # Eliminate front hyphen
     return eliminate_front_hyphen(word)
 
-def tokenize_and_transform(text, ignore_word = ' '):
+def tokenize_and_transform(text, ignore_word = ' ', as_list = False):
     words = (text.lower()).split()
     transformed_text = []
     for w in words:
         transformed_text.append(transform(w, ignore_word))
+    if as_list:
+        return transformed_text
     return ' '.join(transformed_text)
