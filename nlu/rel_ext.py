@@ -305,7 +305,7 @@ class Dataset(object):
 
         """
         if not vectorize:
-
+            print ('--------- > not vectorizer')
             feat_matrices_by_rel = defaultdict(list)
             if len(featurizers) != 1:
                 raise ValueError(

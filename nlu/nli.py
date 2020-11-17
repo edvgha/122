@@ -7,6 +7,7 @@ import random
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 import utils
 
 __author__ = "Christopher Potts"
