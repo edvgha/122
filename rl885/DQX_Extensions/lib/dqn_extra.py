@@ -259,8 +259,14 @@ class DistributionalDQN(nn.Module):
 
     def both(self, x):
         cat_out = self(x)
+        print("cat_out len:", cat_out.shape)
+        print(cat_out[0, 0, :])
         probs = self.apply_softmax(cat_out)
+        print("probs len:", probs.shape)
+        print(probs[0, 0 , :])
         weights = probs * self.supports
+        print("weights len:", weights.shape)
+        print(weights[0, 0, :])
         res = weights.sum(dim=2)
         return cat_out, res
 
