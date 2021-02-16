@@ -1,8 +1,8 @@
 import numpy as np
 import MDP
+import RL2
 import RL
 
-import sys
 
 ''' Construct a simple maze MDP
 
@@ -302,16 +302,22 @@ discount = 0.95
 mdp = MDP.MDP(T,R,discount)
 
 # RL problem
+rlProblem2 = RL2.RL2(mdp,np.random.normal)
 rlProblem = RL.RL(mdp,np.random.normal)
 
-# Test Q-learning
-[Q,policy,avgR1] = rlProblem.qLearning(s0=0,initialQ=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.05)
+# Test REINFORCE 
+# policy = rlProblem.reinforce(s0=0,initialPolicyParams=np.random.rand(mdp.nActions,mdp.nStates),nEpisodes=200,nSteps=100)
+# print "\nREINFORCE results"
+# print policy
+
+# Test model-based RL
+[V,policy, avgR1] = rlProblem2.modelBasedRL(s0=0,defaultT=np.ones([mdp.nActions,mdp.nStates,mdp.nStates])/mdp.nStates,initialR=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.05)
 print(policy)
-[Q,policy,avgR2] = rlProblem.qLearning(s0=0,initialQ=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.1)
+[V,policy, avgR2] = rlProblem2.modelBasedRL(s0=0,defaultT=np.ones([mdp.nActions,mdp.nStates,mdp.nStates])/mdp.nStates,initialR=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.1)
 print(policy)
-[Q,policy,avgR3] = rlProblem.qLearning(s0=0,initialQ=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.3)
+[V,policy, avgR3] = rlProblem2.modelBasedRL(s0=0,defaultT=np.ones([mdp.nActions,mdp.nStates,mdp.nStates])/mdp.nStates,initialR=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.3)
 print(policy)
-[Q,policy,avgR4] = rlProblem.qLearning(s0=0,initialQ=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.5)
+[V,policy, avgR4] = rlProblem2.modelBasedRL(s0=0,defaultT=np.ones([mdp.nActions,mdp.nStates,mdp.nStates])/mdp.nStates,initialR=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.5)
 print(policy)
 
 import matplotlib.pyplot as plt
@@ -334,3 +340,9 @@ axs[1, 1].plot(x4, y4)
 axs[1, 1].set_title("eps = 0.5")
 plt.tight_layout()
 plt.show()
+
+# Test Q-learning
+[Q,policy, avgR] = rlProblem.qLearning(s0=0,initialQ=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=200,nSteps=100,epsilon=0.05)
+print ("\nQ-learning results")
+print (policy)
+print (Q)
