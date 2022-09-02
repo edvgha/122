@@ -1,0 +1,36 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "*"
+scipy = "*"
+scikit-learn = "*"
+matplotlib = "*"
+pandas = "*"
+jupyterlab = "*"
+notebook = "*"
+xgboost = "==1.5.0"
+pyprind = "*"
+nltk = "*"
+mlxtend = "*"
+torch = "*"
+torchvision = "*"
+pytorch-lightning = "*"
+tensorboard = "*"
+torchtext = "*"
+torchdata = "*"
+transformers = "*"
+networkx = "*"
+torch-scatter = "==2.0.9"
+torch-sparse = "==0.6.12"
+torch-geometric = "==2.0.2"
+install = "*"
+gym = "==0.20"
+pyglet = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
